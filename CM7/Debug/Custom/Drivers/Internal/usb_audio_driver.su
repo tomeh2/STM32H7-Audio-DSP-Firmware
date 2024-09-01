@@ -1,0 +1,5 @@
+../Custom/Drivers/Internal/usb_audio_driver.c:25:8:usb_start	16	static,ignoring_inline_asm
+../Custom/Drivers/Internal/usb_audio_driver.c:45:8:usb_stop	16	static,ignoring_inline_asm
+../Custom/Drivers/Internal/usb_audio_driver.c:59:8:usb_read	32	static,ignoring_inline_asm
+../Custom/Drivers/Internal/usb_audio_driver.c:92:8:usb_write	40	static,ignoring_inline_asm
+../Custom/Drivers/Internal/usb_audio_driver.c:138:8:usb_ioctl	16	static,ignoring_inline_asm

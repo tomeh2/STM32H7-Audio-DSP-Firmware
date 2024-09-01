@@ -1,0 +1,2 @@
+../Custom/Src/encoder.c:13:8:encoder_decode_stream	3
+../Custom/Src/encoder.c:48:8:encoder_decode_2ch_16b	3

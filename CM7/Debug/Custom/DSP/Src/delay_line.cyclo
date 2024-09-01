@@ -1,0 +1,6 @@
+../Custom/DSP/Src/delay_line.c:22:8:delayline_init	9
+../Custom/DSP/Src/delay_line.c:58:8:delayline_destroy	1
+../Custom/DSP/Src/delay_line.c:64:8:delayline_set_tap_delay	4
+../Custom/DSP/Src/delay_line.c:76:8:delayline_set_tap_volume	4
+../Custom/DSP/Src/delay_line.c:88:8:delayline_set_fb_volume	3
+../Custom/DSP/Src/delay_line.c:97:8:delayline_process	10

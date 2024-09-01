@@ -1,0 +1,7 @@
+../Custom/Console/Src/console.c:40:6:console_init	2
+../Custom/Console/Src/console.c:52:6:console_print	2
+../Custom/Console/Src/console.c:62:6:console_println	2
+../Custom/Console/Src/console.c:71:6:console_register_command	4
+../Custom/Console/Src/console.c:95:6:console_parse	10
+../Custom/Console/Src/console.c:142:6:console_exec	3
+../Custom/Console/Src/console.c:159:6:console_iteration	10

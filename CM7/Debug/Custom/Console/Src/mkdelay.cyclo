@@ -1,0 +1,4 @@
+../Custom/Console/Src/mkdelay.c:16:6:mkdelay	4
+../Custom/Console/Src/mkdelay.c:54:6:delayline_tap_delay	5
+../Custom/Console/Src/mkdelay.c:84:6:delayline_tap_volume	5
+../Custom/Console/Src/mkdelay.c:114:6:delayline_fb_volume	5

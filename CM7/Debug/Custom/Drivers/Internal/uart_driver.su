@@ -1,0 +1,6 @@
+../Custom/Drivers/Internal/uart_driver.c:28:8:uart_start	16	static
+../Custom/Drivers/Internal/uart_driver.c:48:8:uart_stop	16	static
+../Custom/Drivers/Internal/uart_driver.c:53:8:uart_read	40	static
+../Custom/Drivers/Internal/uart_driver.c:68:8:uart_write	24	static
+../Custom/Drivers/Internal/uart_driver.c:74:8:uart_ioctl	16	static
+../Custom/Drivers/Internal/uart_driver.c:79:6:HAL_UART_RxCpltCallback	16	static

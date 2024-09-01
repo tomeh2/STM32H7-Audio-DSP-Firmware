@@ -1,0 +1,5 @@
+../Custom/Drivers/Internal/usb_audio_driver.c:25:8:usb_start	2
+../Custom/Drivers/Internal/usb_audio_driver.c:45:8:usb_stop	2
+../Custom/Drivers/Internal/usb_audio_driver.c:59:8:usb_read	4
+../Custom/Drivers/Internal/usb_audio_driver.c:92:8:usb_write	4
+../Custom/Drivers/Internal/usb_audio_driver.c:138:8:usb_ioctl	2

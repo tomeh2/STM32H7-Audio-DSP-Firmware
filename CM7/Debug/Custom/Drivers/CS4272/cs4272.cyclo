@@ -1,0 +1,7 @@
+../Custom/Drivers/CS4272/cs4272.c:23:6:cs4272_dma_half_cmpl_callback	1
+../Custom/Drivers/CS4272/cs4272.c:30:6:cs4272_dma_cmpl_callback	1
+../Custom/Drivers/CS4272/cs4272.c:37:8:cs4272_start	5
+../Custom/Drivers/CS4272/cs4272.c:95:8:cs4272_stop	4
+../Custom/Drivers/CS4272/cs4272.c:113:8:cs4272_read	1
+../Custom/Drivers/CS4272/cs4272.c:118:8:cs4272_write	5
+../Custom/Drivers/CS4272/cs4272.c:144:8:cs4272_ioctl	2

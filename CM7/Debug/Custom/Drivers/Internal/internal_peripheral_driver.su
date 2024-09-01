@@ -1,0 +1,7 @@
+../Custom/Drivers/Internal/internal_peripheral_driver.c:14:6:intper_dma_half_cmpl_callback	4	static
+../Custom/Drivers/Internal/internal_peripheral_driver.c:21:6:intper_dma_cmpl_callback	4	static
+../Custom/Drivers/Internal/internal_peripheral_driver.c:28:9:intper_start	32	static
+../Custom/Drivers/Internal/internal_peripheral_driver.c:55:8:intper_stop	24	static
+../Custom/Drivers/Internal/internal_peripheral_driver.c:70:9:intper_read	24	static
+../Custom/Drivers/Internal/internal_peripheral_driver.c:75:9:intper_write	40	static
+../Custom/Drivers/Internal/internal_peripheral_driver.c:93:9:intper_ioctl	16	static

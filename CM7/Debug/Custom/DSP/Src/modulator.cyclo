@@ -1,0 +1,3 @@
+../Custom/DSP/Src/modulator.c:11:8:modulator_init	1
+../Custom/DSP/Src/modulator.c:20:8:modulator_destroy	1
+../Custom/DSP/Src/modulator.c:26:8:modulator_process	3

@@ -1,0 +1,7 @@
+../Custom/Src/logger.c:20:8:logger_init	5
+../Custom/Src/logger.c:48:8:logger_timer_set_name	2
+../Custom/Src/logger.c:57:8:logger_log_timer_start	3
+../Custom/Src/logger.c:70:8:logger_log_timer_stop	7
+../Custom/Src/logger.c:98:8:logger_log_timer_avg	5
+../Custom/Src/logger.c:121:8:logger_event_set_name	2
+../Custom/Src/logger.c:131:8:logger_event_increment	2

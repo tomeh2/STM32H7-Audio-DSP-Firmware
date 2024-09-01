@@ -1,0 +1,3 @@
+../Custom/Audio/Src/block_list.c:19:8:blocklist_init	16	static
+../Custom/Audio/Src/block_list.c:41:8:blocklist_insert	32	static
+../Custom/Audio/Src/block_list.c:74:15:blocklist_get_by_name	24	static

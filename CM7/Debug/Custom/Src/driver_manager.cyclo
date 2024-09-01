@@ -1,0 +1,5 @@
+../Custom/Src/driver_manager.c:23:6:drvman_init	2
+../Custom/Src/driver_manager.c:35:6:drvman_register_driver	3
+../Custom/Src/driver_manager.c:59:6:drvman_set_serial_driver	3
+../Custom/Src/driver_manager.c:83:6:drvman_set_audio_driver	3
+../Custom/Src/driver_manager.c:107:6:drvman_set_usb_driver	3
