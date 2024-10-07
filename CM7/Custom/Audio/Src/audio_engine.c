@@ -10,29 +10,25 @@
 #include "arm_math.h"
 #include "console.h"
 #include "audio_engine.h"
+#include "linked_list.h"
 
 #define NUM_CHANNELS 2
 
-static struct Channel channels[NUM_CHANNELS];
+struct LinkedList processing_chain;
 
 void audio_engine_init()
 {
-	for (uint8_t i = 0; i < NUM_CHANNELS; i++)
-	{
-		channel_init(&channels[i], i);
-	}
+
 }
 
 void audio_engine_process(float32_t* buf, int32_t block_size)
 {
-	for (uint8_t ch = 0; ch < NUM_CHANNELS; ch++)
+	struct LinkedListElement* curr = processing_chain.head;
+	while (curr)
 	{
-		struct Block* curr = channels[ch].head;
-		while (curr)
-		{
-			curr->process(curr, &buf[ch * SAMPLES_PER_BLOCK], SAMPLES_PER_BLOCK);
-			curr = curr->next;
-		}
+		struct Block* curr_blk = curr->element;
+		curr_blk->process(curr_blk->dsp_struct_ptr, buf, block_size);
+		curr = curr->next;
 	}
 }
 
@@ -50,5 +46,16 @@ void audio_engine_insblk(uint8_t ch_id, struct Block* block)
 		return;
 	}
 
-	channel_insert_block(&channels[ch_id], block, 100);
+	linkedlist_insert(&processing_chain, block, 100);
+}
+
+void audio_engine_rmblk(uint8_t ch_id, uint32_t index)
+{
+	if (ch_id >= NUM_CHANNELS)
+	{
+		console_println("[Audio Engine] Invalid channel ID");
+		return;
+	}
+
+	linkedlist_remove(&processing_chain, index);
 }

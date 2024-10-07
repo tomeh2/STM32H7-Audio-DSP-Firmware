@@ -32,7 +32,7 @@ void modulator_create(char** args, uint8_t argc)
 		return;
 	}
 
-	if (blocklist_insert(new_modulator, args[0], modulator_process, BLOCK_TYPE_MODULATOR) == -1)
+	if (blocklist_insert(new_modulator, args[0], modulator_process, modulator_set_param, modulator_get_param_str, modulator_get_num_params) == -1)
 	{
 		console_println("Failed inserting the modulator block into the block list");
 		modulator_destroy(new_modulator);

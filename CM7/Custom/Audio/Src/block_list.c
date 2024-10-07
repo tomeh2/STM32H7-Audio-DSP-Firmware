@@ -28,17 +28,22 @@ int8_t blocklist_init()
 
 	for (uint8_t i = 0; i < MAX_DSP_BLOCKS; i++)
 	{
-		block_list[i].next = NULL;
 		block_list[i].dsp_struct_ptr = NULL;
 		block_list[i].process = NULL;
-		block_list[i].type = BLOCK_TYPE_UNKNOWN;
+		block_list[i].set_param = NULL;
+		block_list[i].get_param_str = NULL;
 	}
 	blocklist_initialized = 1;
 
 	return EOK;
 }
 
-int8_t blocklist_insert(void* dsp_struct_ptr, char* name, void (*process)(void*, float*, size_t), uint8_t type)
+int8_t blocklist_insert(void* dsp_struct_ptr,
+						char* name,
+						void (*process)(void*, float*, size_t),
+						int8_t (*set_param)(void*, uint8_t, float),
+						char* (*get_param_str)(void*, uint8_t),
+						uint8_t (*get_num_params)(void*))
 {
 	if (!blocklist_initialized)
 		return -EINVAL;
@@ -67,7 +72,9 @@ int8_t blocklist_insert(void* dsp_struct_ptr, char* name, void (*process)(void*,
 	block_list[free_block_index].name[str_size] = '\0';
 	block_list[free_block_index].dsp_struct_ptr = dsp_struct_ptr;
 	block_list[free_block_index].process = process;
-	block_list[free_block_index].type = type;
+	block_list[free_block_index].set_param = set_param;
+	block_list[free_block_index].get_param_str = get_param_str;
+	block_list[free_block_index].get_num_params = get_num_params;
 	return EOK;
 }
 
@@ -75,8 +82,7 @@ struct Block* blocklist_get_by_name(char* name)
 {
 	for (uint8_t i = 0; i < MAX_DSP_BLOCKS; i++)
 	{
-		if (block_list[i].type != BLOCK_TYPE_UNKNOWN &&
-			!strcmp(block_list[i].name, name))
+		if (!strcmp(block_list[i].name, name))
 		{
 			return &block_list[i];
 		}

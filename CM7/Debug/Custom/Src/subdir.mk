@@ -9,21 +9,27 @@ C_SRCS += \
 ../Custom/Src/driver_manager.c \
 ../Custom/Src/encoder.c \
 ../Custom/Src/interface.c \
-../Custom/Src/logger.c 
+../Custom/Src/linked_list.c \
+../Custom/Src/logger.c \
+../Custom/Src/parameter.c 
 
 OBJS += \
 ./Custom/Src/console.o \
 ./Custom/Src/driver_manager.o \
 ./Custom/Src/encoder.o \
 ./Custom/Src/interface.o \
-./Custom/Src/logger.o 
+./Custom/Src/linked_list.o \
+./Custom/Src/logger.o \
+./Custom/Src/parameter.o 
 
 C_DEPS += \
 ./Custom/Src/console.d \
 ./Custom/Src/driver_manager.d \
 ./Custom/Src/encoder.d \
 ./Custom/Src/interface.d \
-./Custom/Src/logger.d 
+./Custom/Src/linked_list.d \
+./Custom/Src/logger.d \
+./Custom/Src/parameter.d 
 
 
 # Each subdirectory must supply rules for building sources it contributes
@@ -33,7 +39,7 @@ Custom/Src/%.o Custom/Src/%.su Custom/Src/%.cyclo: ../Custom/Src/%.c Custom/Src/
 clean: clean-Custom-2f-Src
 
 clean-Custom-2f-Src:
-	-$(RM) ./Custom/Src/console.cyclo ./Custom/Src/console.d ./Custom/Src/console.o ./Custom/Src/console.su ./Custom/Src/driver_manager.cyclo ./Custom/Src/driver_manager.d ./Custom/Src/driver_manager.o ./Custom/Src/driver_manager.su ./Custom/Src/encoder.cyclo ./Custom/Src/encoder.d ./Custom/Src/encoder.o ./Custom/Src/encoder.su ./Custom/Src/interface.cyclo ./Custom/Src/interface.d ./Custom/Src/interface.o ./Custom/Src/interface.su ./Custom/Src/logger.cyclo ./Custom/Src/logger.d ./Custom/Src/logger.o ./Custom/Src/logger.su
+	-$(RM) ./Custom/Src/console.cyclo ./Custom/Src/console.d ./Custom/Src/console.o ./Custom/Src/console.su ./Custom/Src/driver_manager.cyclo ./Custom/Src/driver_manager.d ./Custom/Src/driver_manager.o ./Custom/Src/driver_manager.su ./Custom/Src/encoder.cyclo ./Custom/Src/encoder.d ./Custom/Src/encoder.o ./Custom/Src/encoder.su ./Custom/Src/interface.cyclo ./Custom/Src/interface.d ./Custom/Src/interface.o ./Custom/Src/interface.su ./Custom/Src/linked_list.cyclo ./Custom/Src/linked_list.d ./Custom/Src/linked_list.o ./Custom/Src/linked_list.su ./Custom/Src/logger.cyclo ./Custom/Src/logger.d ./Custom/Src/logger.o ./Custom/Src/logger.su ./Custom/Src/parameter.cyclo ./Custom/Src/parameter.d ./Custom/Src/parameter.o ./Custom/Src/parameter.su
 
 .PHONY: clean-Custom-2f-Src
 

@@ -1,3 +1,4 @@
-../Custom/Audio/Src/audio_engine.c:18:6:audio_engine_init	16	static
-../Custom/Audio/Src/audio_engine.c:26:6:audio_engine_process	24	static
-../Custom/Audio/Src/audio_engine.c:39:6:audio_engine_insblk	16	static
+../Custom/Audio/Src/audio_engine.c:19:6:audio_engine_init	4	static
+../Custom/Audio/Src/audio_engine.c:24:6:audio_engine_process	24	static
+../Custom/Audio/Src/audio_engine.c:35:6:audio_engine_insblk	16	static
+../Custom/Audio/Src/audio_engine.c:52:6:audio_engine_rmblk	16	static

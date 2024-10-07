@@ -8,11 +8,12 @@
 #ifndef DSP_INC_DELAY_LINE_H_
 #define DSP_INC_DELAY_LINE_H_
 
-#define MAX_TAPS 8
 #define MAX_BUF_SIZE 524288		// 512 KSamples
 
+#include "block.h"
 #include "delay_line.h"
 #include "arm_math.h"
+#include "parameter.h"
 
 #include <stdlib.h>
 #include <stdint.h>
@@ -20,10 +21,12 @@
 
 struct DelayLine
 {
+	struct Parameter* params;
 	uint8_t num_taps;
-	int32_t taps[MAX_TAPS];
-	float32_t coeffs[MAX_TAPS];
-	float32_t fb_coeff;
+	uint8_t num_params;
+	uint8_t tap_delay_base;
+	uint8_t tap_coeff_base;
+	uint8_t fb_coeff_base;
 	int32_t buf_size;
 	int32_t max_delay;
 	float32_t* buffer;
@@ -34,10 +37,10 @@ extern int8_t delayline_init(struct DelayLine* delay_line,
 							 uint8_t num_taps,
 							 int32_t max_delay,
 							 int32_t block_size);
-extern int8_t delayline_destroy(struct DelayLine* delay_line);
-extern int8_t delayline_process(struct DelayLine* delay_line, float32_t* buf, int32_t block_size);
-extern int8_t delayline_set_tap_delay(struct DelayLine* delay_line, uint8_t tap_index, int32_t tap_delay);
-extern int8_t delayline_set_tap_volume(struct DelayLine* delay_line, uint8_t tap_index, float32_t tap_volume);
-extern int8_t delayline_set_fb_volume(struct DelayLine* delay_line, float32_t fb_coeff);
+int8_t delayline_destroy(struct DelayLine* delay_line);
+int8_t delayline_process(struct DelayLine* delay_line, float32_t* buf, int32_t block_size);
+int8_t delayline_set_param(struct DelayLine* delay_line, uint32_t index, float32_t value);
+char* delayline_get_param_str(struct DelayLine* delay_line, uint32_t index);
+uint8_t delayline_get_num_params(struct DelayLine* delay_line);
 
 #endif /* DSP_INC_DELAY_LINE_H_ */

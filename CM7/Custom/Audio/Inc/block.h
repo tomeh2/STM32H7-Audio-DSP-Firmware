@@ -8,20 +8,23 @@
 #ifndef AUDIO_INC_BLOCK_H_
 #define AUDIO_INC_BLOCK_H_
 
-#define BLOCK_TYPE_DELAYLINE 0
-#define BLOCK_TYPE_MODULATOR 1
-#define BLOCK_TYPE_UNKNOWN 255
 #define BLOCK_NAME_SIZE 32
 
 #include <stddef.h>
+#include <stdint.h>
 
 struct Block
 {
-	uint8_t type;
-	char name[BLOCK_NAME_SIZE + 1];
-	void (*process)(void* private_data, float* buf, size_t block_size);
 	void* dsp_struct_ptr;
-	struct Block* next;
+	char name[BLOCK_NAME_SIZE + 1];
+	void (*process)(void* dsp_struct_ptr, float* buf, size_t block_size);
+	int8_t (*set_param)(void* dsp_struct_ptr, uint8_t, float);
+	char* (*get_param_str)(void* dsp_struct_ptr, uint8_t);
+	uint8_t (*get_num_params)(void* dsp_struct_ptr);
 };
+
+inline int8_t block_set_param(struct Block* block, uint8_t index, float value);
+inline char* block_get_param_str(struct Block* block, uint8_t index);
+inline int8_t block_get_num_params(struct Block* block);
 
 #endif /* AUDIO_INC_BLOCK_H_ */

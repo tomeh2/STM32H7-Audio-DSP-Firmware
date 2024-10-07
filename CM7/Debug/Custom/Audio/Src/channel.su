@@ -1,4 +1,4 @@
 ../Custom/Audio/Src/channel.c:10:6:channel_init	16	static
-../Custom/Audio/Src/channel.c:16:6:channel_process	32	static
-../Custom/Audio/Src/channel.c:27:6:channel_insert_block	40	static
-../Custom/Audio/Src/channel.c:62:6:channel_remove_block	16	static
+../Custom/Audio/Src/channel.c:16:6:channel_process	24	static
+../Custom/Audio/Src/channel.c:22:6:channel_insert_block	24	static
+../Custom/Audio/Src/channel.c:27:6:channel_remove_block	16	static

@@ -6,16 +6,19 @@
 # Add inputs and outputs from these tool invocations to the build variables 
 C_SRCS += \
 ../Custom/Audio/Src/audio_engine.c \
+../Custom/Audio/Src/block.c \
 ../Custom/Audio/Src/block_list.c \
 ../Custom/Audio/Src/channel.c 
 
 OBJS += \
 ./Custom/Audio/Src/audio_engine.o \
+./Custom/Audio/Src/block.o \
 ./Custom/Audio/Src/block_list.o \
 ./Custom/Audio/Src/channel.o 
 
 C_DEPS += \
 ./Custom/Audio/Src/audio_engine.d \
+./Custom/Audio/Src/block.d \
 ./Custom/Audio/Src/block_list.d \
 ./Custom/Audio/Src/channel.d 
 
@@ -27,7 +30,7 @@ Custom/Audio/Src/%.o Custom/Audio/Src/%.su Custom/Audio/Src/%.cyclo: ../Custom/A
 clean: clean-Custom-2f-Audio-2f-Src
 
 clean-Custom-2f-Audio-2f-Src:
-	-$(RM) ./Custom/Audio/Src/audio_engine.cyclo ./Custom/Audio/Src/audio_engine.d ./Custom/Audio/Src/audio_engine.o ./Custom/Audio/Src/audio_engine.su ./Custom/Audio/Src/block_list.cyclo ./Custom/Audio/Src/block_list.d ./Custom/Audio/Src/block_list.o ./Custom/Audio/Src/block_list.su ./Custom/Audio/Src/channel.cyclo ./Custom/Audio/Src/channel.d ./Custom/Audio/Src/channel.o ./Custom/Audio/Src/channel.su
+	-$(RM) ./Custom/Audio/Src/audio_engine.cyclo ./Custom/Audio/Src/audio_engine.d ./Custom/Audio/Src/audio_engine.o ./Custom/Audio/Src/audio_engine.su ./Custom/Audio/Src/block.cyclo ./Custom/Audio/Src/block.d ./Custom/Audio/Src/block.o ./Custom/Audio/Src/block.su ./Custom/Audio/Src/block_list.cyclo ./Custom/Audio/Src/block_list.d ./Custom/Audio/Src/block_list.o ./Custom/Audio/Src/block_list.su ./Custom/Audio/Src/channel.cyclo ./Custom/Audio/Src/channel.d ./Custom/Audio/Src/channel.o ./Custom/Audio/Src/channel.su
 
 .PHONY: clean-Custom-2f-Audio-2f-Src
 

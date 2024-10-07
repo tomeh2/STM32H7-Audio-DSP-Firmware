@@ -1,0 +1,3 @@
+../Custom/Src/linked_list.c:14:8:linkedlist_init	16	static
+../Custom/Src/linked_list.c:19:8:linkedlist_insert	40	static
+../Custom/Src/linked_list.c:59:8:linkedlist_remove	32	static

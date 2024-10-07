@@ -1,3 +1,6 @@
-../Custom/DSP/Src/modulator.c:11:8:modulator_init	1
-../Custom/DSP/Src/modulator.c:20:8:modulator_destroy	1
-../Custom/DSP/Src/modulator.c:26:8:modulator_process	3
+../Custom/DSP/Src/modulator.c:13:8:modulator_init	1
+../Custom/DSP/Src/modulator.c:24:8:modulator_destroy	1
+../Custom/DSP/Src/modulator.c:31:8:modulator_set_param	3
+../Custom/DSP/Src/modulator.c:42:7:modulator_get_param_str	3
+../Custom/DSP/Src/modulator.c:53:9:modulator_get_num_params	1
+../Custom/DSP/Src/modulator.c:58:8:modulator_process	3

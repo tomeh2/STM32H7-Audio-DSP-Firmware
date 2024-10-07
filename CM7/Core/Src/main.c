@@ -38,7 +38,12 @@
 #include "help.h"
 #include "stat.h"
 #include "lsdrv.h"
+#include "lsparam.h"
+#include "lschain.h"
+#include "rmblk.h"
+#include "setparam.h"
 #include "mkdelay.h"
+#include "mkbiquad.h"
 #include "block_list.h"
 #include "con_modulator.h"
 #include "logger.h"
@@ -124,9 +129,6 @@ struct Interface usb_driver =
 };
 
 float32_t processing_buffers[SAMPLES_PER_BLOCK * NUM_CHANNELS];
-
-struct Channel channel_0;
-struct Channel* temp123;
 
 uint8_t temp_next_block_ready;
 /* USER CODE END PV */
@@ -262,25 +264,28 @@ HSEM notification */
   console_register_command("help\0", help);
   console_register_command("stat\0", stat);
   console_register_command("lsblk\0", lsblk);
-  console_register_command("delayline_create\0", mkdelay);
-  console_register_command("delayline_tap_delay\0", delayline_tap_delay);
-  console_register_command("delayline_tap_volume\0", delayline_tap_volume);
-  console_register_command("delayline_fb_volume\0", delayline_fb_volume);
-  console_register_command("modulator_create\0", modulator_create);
+  console_register_command("mkdelay\0", mkdelay);
+  console_register_command("mkmod\0", modulator_create);
+  console_register_command("mkbiquad\0", mkbiquad);
   console_register_command("insblk\0", insblk);
+  console_register_command("rmblk\0", rmblk);
   console_register_command("lsdrv\0", lsdrv);
-
-  channel_init(&channel_0, 0);
-  temp123 = &channel_0;
+  console_register_command("lsparam\0", lsparam);
+  console_register_command("lschain\0", lschain);
+  console_register_command("setparam\0", setparam);
 
   console_exec("\r");
-  console_exec("delayline_create dl_0 4 50000");
-  console_exec("delayline_tap_delay dl_0 0 24000");
-  console_exec("delayline_tap_volume dl_0 0 1.0");
-  console_exec("delayline_fb_volume dl_0 0.5");
-  console_exec("insblk dl_0 0");
-  console_exec("modulator_create mod_0");
-  console_exec("insblk mod_0 0");
+  console_exec("mkdelay dl_0 2 50000");
+  console_exec("setparam dl_0 0 0");
+  console_exec("setparam dl_0 1 24000");
+  console_exec("setparam dl_0 2 1.0");
+  console_exec("setparam dl_0 3 0.5");
+  console_exec("setparam dl_0 4 0.25");
+  //console_exec("insblk dl_0 0");
+  console_exec("mkmod mod_0");
+  console_exec("setparam mod_0 0 440");
+  console_exec("setparam mod_0 1 0.75");
+  //console_exec("insblk mod_0 0");
 
   //while (audio_source_buffer->bytes_free * 100 / audio_source_buffer->size > AUDIO_USB_BUF_TRESHOLD_START);
 

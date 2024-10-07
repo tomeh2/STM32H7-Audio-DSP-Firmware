@@ -1,6 +1,6 @@
-../Custom/DSP/Src/delay_line.c:22:8:delayline_init	24	static
-../Custom/DSP/Src/delay_line.c:58:8:delayline_destroy	16	static
-../Custom/DSP/Src/delay_line.c:64:8:delayline_set_tap_delay	24	static
-../Custom/DSP/Src/delay_line.c:76:8:delayline_set_tap_volume	24	static
-../Custom/DSP/Src/delay_line.c:88:8:delayline_set_fb_volume	16	static
-../Custom/DSP/Src/delay_line.c:97:8:delayline_process	48	static
+../Custom/DSP/Src/delay_line.c:19:8:delayline_init	32	static
+../Custom/DSP/Src/delay_line.c:65:8:delayline_destroy	16	static
+../Custom/DSP/Src/delay_line.c:72:8:delayline_set_param	24	static
+../Custom/DSP/Src/delay_line.c:80:7:delayline_get_param_str	16	static
+../Custom/DSP/Src/delay_line.c:88:9:delayline_get_num_params	16	static
+../Custom/DSP/Src/delay_line.c:93:8:delayline_process	56	static

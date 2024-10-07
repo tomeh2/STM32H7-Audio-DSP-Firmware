@@ -1,4 +1,1 @@
-../Custom/Console/Src/mkdelay.c:16:6:mkdelay	32	static
-../Custom/Console/Src/mkdelay.c:54:6:delayline_tap_delay	32	static
-../Custom/Console/Src/mkdelay.c:84:6:delayline_tap_volume	32	static
-../Custom/Console/Src/mkdelay.c:114:6:delayline_fb_volume	32	static
+../Custom/Console/Src/mkdelay.c:16:6:mkdelay	40	static

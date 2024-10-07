@@ -26,7 +26,7 @@ void insblk(char** args, uint8_t argc)
 
 	struct Block* block = blocklist_get_by_name(args[0]);
 
-	if (!block || block->type == BLOCK_TYPE_UNKNOWN)
+	if (!block)
 	{
 		console_println("Invalid block type");
 		return;

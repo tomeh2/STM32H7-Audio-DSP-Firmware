@@ -25,6 +25,8 @@ static size_t rx_used;
 
 static uint8_t recv;
 
+static uint8_t uart_lock;
+
 int8_t uart_start(struct Interface* intf)
 {
 	if (is_init)
@@ -40,6 +42,8 @@ int8_t uart_start(struct Interface* intf)
 	rx_tail = 0;
 	rx_used = 0;
 	recv = 0;
+
+	uart_lock = 0;
 
 	is_init = 1;
 	return 0;
@@ -67,11 +71,16 @@ int8_t uart_read(struct Interface* intf, void* buf, size_t len)
 
 int8_t uart_write(struct Interface* intf, void* buf, size_t len)
 {
-	while (HAL_UART_Transmit_IT(intf->private_data, buf, len) == HAL_BUSY);
+	HAL_UART_Transmit(intf->private_data, buf, len, 1000000);
 	return len;
 }
 
 int8_t uart_ioctl(struct Interface* intf, uint32_t ctlId)
+{
+
+}
+
+void HAL_UART_TxCpltCallback(UART_HandleTypeDef *huart)
 {
 
 }

@@ -1,0 +1,3 @@
+../Custom/Src/parameter.c:21:8:parameter_init	32	static
+../Custom/Src/parameter.c:31:8:parameter_set	16	static
+../Custom/Src/parameter.c:46:7:parameter_tostr	64	static

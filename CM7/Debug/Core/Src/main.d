@@ -48,12 +48,13 @@ Core/Src/main.o: ../Core/Src/main.c ../Core/Inc/main.h \
  ../../Drivers/CMSIS/DSP/Include/arm_math.h \
  ../../Drivers/CMSIS/Include/cmsis_compiler.h \
  C:/Projects/STM32/STM32H7-Audio-DSP-Firmware/CM7/Custom/DSP/Inc/delay_line.h \
+ C:/Projects/STM32/STM32H7-Audio-DSP-Firmware/CM7/Custom/Audio/Inc/block.h \
  C:/Projects/STM32/STM32H7-Audio-DSP-Firmware/CM7/Custom/DSP/Inc/delay_line.h \
+ C:/Projects/STM32/STM32H7-Audio-DSP-Firmware/CM7/Custom/Inc/parameter.h \
  C:/Projects/STM32/STM32H7-Audio-DSP-Firmware/CM7/Custom/Console/Inc/console.h \
  C:/Projects/STM32/STM32H7-Audio-DSP-Firmware/CM7/Custom/Drivers/Internal/uart_driver.h \
  C:/Projects/STM32/STM32H7-Audio-DSP-Firmware/CM7/Custom/Inc/driver_manager.h \
  C:/Projects/STM32/STM32H7-Audio-DSP-Firmware/CM7/Custom/Inc/interface.h \
- C:/Projects/STM32/STM32H7-Audio-DSP-Firmware/CM7/Custom/DSP/Inc/block.h \
  C:/Projects/STM32/STM32H7-Audio-DSP-Firmware/CM7/Custom/Audio/Inc/channel.h \
  C:/Projects/STM32/STM32H7-Audio-DSP-Firmware/CM7/Custom/Audio/Inc/block.h \
  C:/Projects/STM32/STM32H7-Audio-DSP-Firmware/CM7/Custom/Console/Inc/lsblk.h \
@@ -62,7 +63,12 @@ Core/Src/main.o: ../Core/Src/main.c ../Core/Inc/main.h \
  C:/Projects/STM32/STM32H7-Audio-DSP-Firmware/CM7/Custom/Console/Inc/console.h \
  C:/Projects/STM32/STM32H7-Audio-DSP-Firmware/CM7/Custom/Console/Inc/stat.h \
  C:/Projects/STM32/STM32H7-Audio-DSP-Firmware/CM7/Custom/Console/Inc/lsdrv.h \
+ C:/Projects/STM32/STM32H7-Audio-DSP-Firmware/CM7/Custom/Console/Inc/lsparam.h \
+ C:/Projects/STM32/STM32H7-Audio-DSP-Firmware/CM7/Custom/Console/Inc/lschain.h \
+ C:/Projects/STM32/STM32H7-Audio-DSP-Firmware/CM7/Custom/Console/Inc/rmblk.h \
+ C:/Projects/STM32/STM32H7-Audio-DSP-Firmware/CM7/Custom/Console/Inc/setparam.h \
  C:/Projects/STM32/STM32H7-Audio-DSP-Firmware/CM7/Custom/Console/Inc/mkdelay.h \
+ C:/Projects/STM32/STM32H7-Audio-DSP-Firmware/CM7/Custom/Console/Inc/mkbiquad.h \
  C:/Projects/STM32/STM32H7-Audio-DSP-Firmware/CM7/Custom/Audio/Inc/block_list.h \
  C:/Projects/STM32/STM32H7-Audio-DSP-Firmware/CM7/Custom/Console/Inc/con_modulator.h \
  C:/Projects/STM32/STM32H7-Audio-DSP-Firmware/CM7/Custom/Inc/logger.h \
@@ -76,7 +82,8 @@ Core/Src/main.o: ../Core/Src/main.c ../Core/Inc/main.h \
  ../../Middlewares/ST/STM32_USB_Device_Library/Core/Inc/usbd_ctlreq.h \
  ../../Middlewares/ST/STM32_USB_Device_Library/Core/Inc/usbd_core.h \
  C:/Projects/STM32/STM32H7-Audio-DSP-Firmware/CM7/Custom/Audio/Inc/audio_engine.h \
- C:/Projects/STM32/STM32H7-Audio-DSP-Firmware/CM7/Custom/Audio/Inc/channel.h
+ C:/Projects/STM32/STM32H7-Audio-DSP-Firmware/CM7/Custom/Audio/Inc/channel.h \
+ C:/Projects/STM32/STM32H7-Audio-DSP-Firmware/CM7/Custom/Inc/linked_list.h
 ../Core/Inc/main.h:
 ../../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal.h:
 ../Core/Inc/stm32h7xx_hal_conf.h:
@@ -127,12 +134,13 @@ C:/Projects/STM32/STM32H7-Audio-DSP-Firmware/CM7/Custom/Inc/encoder.h:
 ../../Drivers/CMSIS/DSP/Include/arm_math.h:
 ../../Drivers/CMSIS/Include/cmsis_compiler.h:
 C:/Projects/STM32/STM32H7-Audio-DSP-Firmware/CM7/Custom/DSP/Inc/delay_line.h:
+C:/Projects/STM32/STM32H7-Audio-DSP-Firmware/CM7/Custom/Audio/Inc/block.h:
 C:/Projects/STM32/STM32H7-Audio-DSP-Firmware/CM7/Custom/DSP/Inc/delay_line.h:
+C:/Projects/STM32/STM32H7-Audio-DSP-Firmware/CM7/Custom/Inc/parameter.h:
 C:/Projects/STM32/STM32H7-Audio-DSP-Firmware/CM7/Custom/Console/Inc/console.h:
 C:/Projects/STM32/STM32H7-Audio-DSP-Firmware/CM7/Custom/Drivers/Internal/uart_driver.h:
 C:/Projects/STM32/STM32H7-Audio-DSP-Firmware/CM7/Custom/Inc/driver_manager.h:
 C:/Projects/STM32/STM32H7-Audio-DSP-Firmware/CM7/Custom/Inc/interface.h:
-C:/Projects/STM32/STM32H7-Audio-DSP-Firmware/CM7/Custom/DSP/Inc/block.h:
 C:/Projects/STM32/STM32H7-Audio-DSP-Firmware/CM7/Custom/Audio/Inc/channel.h:
 C:/Projects/STM32/STM32H7-Audio-DSP-Firmware/CM7/Custom/Audio/Inc/block.h:
 C:/Projects/STM32/STM32H7-Audio-DSP-Firmware/CM7/Custom/Console/Inc/lsblk.h:
@@ -141,7 +149,12 @@ C:/Projects/STM32/STM32H7-Audio-DSP-Firmware/CM7/Custom/Console/Inc/help.h:
 C:/Projects/STM32/STM32H7-Audio-DSP-Firmware/CM7/Custom/Console/Inc/console.h:
 C:/Projects/STM32/STM32H7-Audio-DSP-Firmware/CM7/Custom/Console/Inc/stat.h:
 C:/Projects/STM32/STM32H7-Audio-DSP-Firmware/CM7/Custom/Console/Inc/lsdrv.h:
+C:/Projects/STM32/STM32H7-Audio-DSP-Firmware/CM7/Custom/Console/Inc/lsparam.h:
+C:/Projects/STM32/STM32H7-Audio-DSP-Firmware/CM7/Custom/Console/Inc/lschain.h:
+C:/Projects/STM32/STM32H7-Audio-DSP-Firmware/CM7/Custom/Console/Inc/rmblk.h:
+C:/Projects/STM32/STM32H7-Audio-DSP-Firmware/CM7/Custom/Console/Inc/setparam.h:
 C:/Projects/STM32/STM32H7-Audio-DSP-Firmware/CM7/Custom/Console/Inc/mkdelay.h:
+C:/Projects/STM32/STM32H7-Audio-DSP-Firmware/CM7/Custom/Console/Inc/mkbiquad.h:
 C:/Projects/STM32/STM32H7-Audio-DSP-Firmware/CM7/Custom/Audio/Inc/block_list.h:
 C:/Projects/STM32/STM32H7-Audio-DSP-Firmware/CM7/Custom/Console/Inc/con_modulator.h:
 C:/Projects/STM32/STM32H7-Audio-DSP-Firmware/CM7/Custom/Inc/logger.h:
@@ -156,3 +169,4 @@ C:/Projects/STM32/STM32H7-Audio-DSP-Firmware/CM7/Custom/Drivers/Internal/usb_aud
 ../../Middlewares/ST/STM32_USB_Device_Library/Core/Inc/usbd_core.h:
 C:/Projects/STM32/STM32H7-Audio-DSP-Firmware/CM7/Custom/Audio/Inc/audio_engine.h:
 C:/Projects/STM32/STM32H7-Audio-DSP-Firmware/CM7/Custom/Audio/Inc/channel.h:
+C:/Projects/STM32/STM32H7-Audio-DSP-Firmware/CM7/Custom/Inc/linked_list.h:

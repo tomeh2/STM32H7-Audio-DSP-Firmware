@@ -5,14 +5,17 @@
 
 # Add inputs and outputs from these tool invocations to the build variables 
 C_SRCS += \
+../Custom/DSP/Src/biquad_filter.c \
 ../Custom/DSP/Src/delay_line.c \
 ../Custom/DSP/Src/modulator.c 
 
 OBJS += \
+./Custom/DSP/Src/biquad_filter.o \
 ./Custom/DSP/Src/delay_line.o \
 ./Custom/DSP/Src/modulator.o 
 
 C_DEPS += \
+./Custom/DSP/Src/biquad_filter.d \
 ./Custom/DSP/Src/delay_line.d \
 ./Custom/DSP/Src/modulator.d 
 
@@ -24,7 +27,7 @@ Custom/DSP/Src/%.o Custom/DSP/Src/%.su Custom/DSP/Src/%.cyclo: ../Custom/DSP/Src
 clean: clean-Custom-2f-DSP-2f-Src
 
 clean-Custom-2f-DSP-2f-Src:
-	-$(RM) ./Custom/DSP/Src/delay_line.cyclo ./Custom/DSP/Src/delay_line.d ./Custom/DSP/Src/delay_line.o ./Custom/DSP/Src/delay_line.su ./Custom/DSP/Src/modulator.cyclo ./Custom/DSP/Src/modulator.d ./Custom/DSP/Src/modulator.o ./Custom/DSP/Src/modulator.su
+	-$(RM) ./Custom/DSP/Src/biquad_filter.cyclo ./Custom/DSP/Src/biquad_filter.d ./Custom/DSP/Src/biquad_filter.o ./Custom/DSP/Src/biquad_filter.su ./Custom/DSP/Src/delay_line.cyclo ./Custom/DSP/Src/delay_line.d ./Custom/DSP/Src/delay_line.o ./Custom/DSP/Src/delay_line.su ./Custom/DSP/Src/modulator.cyclo ./Custom/DSP/Src/modulator.d ./Custom/DSP/Src/modulator.o ./Custom/DSP/Src/modulator.su
 
 .PHONY: clean-Custom-2f-DSP-2f-Src
 

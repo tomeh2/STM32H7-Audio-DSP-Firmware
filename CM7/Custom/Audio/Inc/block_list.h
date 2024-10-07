@@ -15,8 +15,13 @@
 
 extern struct Block block_list[MAX_DSP_BLOCKS];
 
-extern int8_t blocklist_init();
-extern int8_t blocklist_insert(void* dsp_struct_ptr, char* name, void (*process)(), uint8_t type);
-extern struct Block* blocklist_get_by_name(char* name);
+int8_t blocklist_init();
+int8_t blocklist_insert(void* dsp_struct_ptr,
+						char* name,
+						void (*process)(void*, float*, size_t),
+						int8_t (*set_param)(void*, uint8_t, float),
+						char* (*get_param_str)(void*, uint8_t),
+						uint8_t (*get_num_params)(void*));
+struct Block* blocklist_get_by_name(char* name);
 
 #endif /* AUDIO_INC_BLOCK_LIST_H_ */
