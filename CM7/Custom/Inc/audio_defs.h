@@ -28,6 +28,7 @@
 #define ENOMEM 2
 #define EINVBLKSIZE 3
 #define EOOB 4			// Out of Bounds error
+#define ENULLPTR 5
 
 #define LOG_TIME_PRBLOCK_ID 0
 #define LOG_TIME_USB_RD 1

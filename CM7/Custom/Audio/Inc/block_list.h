@@ -20,8 +20,10 @@ int8_t blocklist_insert(void* dsp_struct_ptr,
 						char* name,
 						void (*process)(void*, float*, size_t),
 						int8_t (*set_param)(void*, uint8_t, float),
-						char* (*get_param_str)(void*, uint8_t),
-						uint8_t (*get_num_params)(void*));
+						int8_t (*get_param)(void*, uint8_t, float*),
+						int8_t (*get_param_string)(void*, uint8_t, char*),
+						uint8_t (*get_num_params)(void*),
+						void (*to_string)(void*, char*));
 struct Block* blocklist_get_by_name(char* name);
 
 #endif /* AUDIO_INC_BLOCK_LIST_H_ */

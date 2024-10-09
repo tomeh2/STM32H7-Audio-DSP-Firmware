@@ -42,7 +42,14 @@ void mkdelay(char** args, uint8_t argc)
 		return;
 	}
 
-	if (blocklist_insert(new_delayline, args[0], delayline_process, delayline_set_param, delayline_get_param_str, delayline_get_num_params) == -1)
+	if (blocklist_insert(new_delayline,
+						 args[0],
+						 delayline_process,
+						 delayline_set_param,
+						 delayline_get_param,
+						 delayline_get_param_string,
+						 delayline_get_num_params,
+						 delayline_to_string) == -1)
 	{
 		console_println("Failed inserting the DelayLine block into the block list");
 		delayline_destroy(new_delayline);

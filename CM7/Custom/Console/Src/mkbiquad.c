@@ -17,17 +17,19 @@ void mkbiquad(char** args, uint8_t argc)
 {
 	if (argc < 4)
 	{
-		console_println("Usage: mkbiquad <name> <center_freq> <bandwidth> <sample_rate>");
+		console_println("Usage: mkbiquad <name> <type> <center_freq> <Q> <sample_rate>");
 		console_println("name = string which is used to reference this block");
+		console_println("type = [0 - LPF] [1 - BPF] [2 - HPF]");
 		console_println("center_freq = center frequency of this band-pass filter");
-		console_println("bandwidth = bandwidth in octaves");
+		console_println("Q = Q factor");
 		console_println("sample_rate = sample rate of the audio engine");
 		return;
 	}
 
-	float center_freq = atof(args[1]);
-	float bw = atof(args[2]);
-	int32_t sr = atoi(args[3]);
+	int32_t filter_type = atof(args[1]);
+	float center_freq = atof(args[2]);
+	float Q = atof(args[3]);
+	float sr = atof(args[4]);
 
 	struct BiquadFilter* new_biquad = malloc(sizeof(struct BiquadFilter));
 	if (!new_biquad)
@@ -36,7 +38,7 @@ void mkbiquad(char** args, uint8_t argc)
 		return;
 	}
 
-	biquad_filter_init(new_biquad, center_freq, sr, bw);
+	biquad_filter_init(new_biquad, center_freq, sr, Q, filter_type);
 	/*if (err)
 	{
 		biquad_filter_destroy(new_biquad);
@@ -49,7 +51,9 @@ void mkbiquad(char** args, uint8_t argc)
 						 biquad_filter_process,
 						 NULL,
 						 NULL,
-						 NULL))
+						 biquad_filter_get_param_string,
+						 biquad_filter_get_num_params,
+						 biquad_filter_to_string))
 	{
 		console_println("Failed inserting the BiquadFilter block into the block list");
 		//biquad_filter_destroy(new_biquad);

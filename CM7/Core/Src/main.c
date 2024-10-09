@@ -286,6 +286,8 @@ HSEM notification */
   console_exec("setparam mod_0 0 440");
   console_exec("setparam mod_0 1 0.75");
   //console_exec("insblk mod_0 0");
+  console_exec("mkbiquad bq_0 4 2000 30.0 48000");
+  //console_exec("insblk bq_0 0");
 
   //while (audio_source_buffer->bytes_free * 100 / audio_source_buffer->size > AUDIO_USB_BUF_TRESHOLD_START);
 

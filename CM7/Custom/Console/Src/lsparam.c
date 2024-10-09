@@ -8,6 +8,7 @@
 #include "lsparam.h"
 #include "block_list.h"
 #include "delay_line.h"
+#include "audio_defs.h"
 
 void lsparam(char** args, uint8_t argc)
 {
@@ -27,8 +28,24 @@ void lsparam(char** args, uint8_t argc)
 		return;
 	}
 
+	if (!block->get_num_params)
+	{
+		console_println("Block does not implement get_num_params function");
+		return;
+	}
+
+	if (!block->get_param_string)
+	{
+		console_println("Block does not implement get_param_str function");
+		return;
+	}
+
 	char print_buf[128];
-	for (uint8_t param_index = 0; param_index < block_get_num_params(block); param_index++)
-		console_println(block_get_param_str(block, param_index));
+	uint8_t num_params = block_get_num_params(block);
+	for (uint8_t i = 0; i < num_params; i++)
+	{
+		block_get_param_string(block, i, print_buf);
+		console_println(print_buf);
+	}
 }
 

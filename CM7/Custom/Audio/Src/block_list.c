@@ -31,7 +31,7 @@ int8_t blocklist_init()
 		block_list[i].dsp_struct_ptr = NULL;
 		block_list[i].process = NULL;
 		block_list[i].set_param = NULL;
-		block_list[i].get_param_str = NULL;
+		block_list[i].get_param = NULL;
 	}
 	blocklist_initialized = 1;
 
@@ -42,8 +42,10 @@ int8_t blocklist_insert(void* dsp_struct_ptr,
 						char* name,
 						void (*process)(void*, float*, size_t),
 						int8_t (*set_param)(void*, uint8_t, float),
-						char* (*get_param_str)(void*, uint8_t),
-						uint8_t (*get_num_params)(void*))
+						int8_t (*get_param)(void*, uint8_t, float*),
+						int8_t (*get_param_string)(void*, uint8_t, char*),
+						uint8_t (*get_num_params)(void*),
+						void (*to_string)(void*, char*))
 {
 	if (!blocklist_initialized)
 		return -EINVAL;
@@ -73,8 +75,10 @@ int8_t blocklist_insert(void* dsp_struct_ptr,
 	block_list[free_block_index].dsp_struct_ptr = dsp_struct_ptr;
 	block_list[free_block_index].process = process;
 	block_list[free_block_index].set_param = set_param;
-	block_list[free_block_index].get_param_str = get_param_str;
+	block_list[free_block_index].get_param = get_param;
+	block_list[free_block_index].get_param_string = get_param_string;
 	block_list[free_block_index].get_num_params = get_num_params;
+	block_list[free_block_index].to_string = to_string;
 	return EOK;
 }
 
