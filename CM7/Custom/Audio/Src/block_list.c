@@ -44,8 +44,7 @@ int8_t blocklist_insert(void* dsp_struct_ptr,
 						int8_t (*set_param)(void*, uint8_t, float),
 						int8_t (*get_param)(void*, uint8_t, float*),
 						int8_t (*get_param_string)(void*, uint8_t, char*),
-						uint8_t (*get_num_params)(void*),
-						void (*to_string)(void*, char*))
+						uint8_t (*get_num_params)(void*))
 {
 	if (!blocklist_initialized)
 		return -EINVAL;
@@ -78,7 +77,6 @@ int8_t blocklist_insert(void* dsp_struct_ptr,
 	block_list[free_block_index].get_param = get_param;
 	block_list[free_block_index].get_param_string = get_param_string;
 	block_list[free_block_index].get_num_params = get_num_params;
-	block_list[free_block_index].to_string = to_string;
 	return EOK;
 }
 

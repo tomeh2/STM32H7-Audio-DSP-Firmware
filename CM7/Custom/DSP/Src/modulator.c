@@ -94,17 +94,13 @@ uint8_t modulator_get_num_params(struct Modulator* modulator)
 	return modulator->num_params;
 }
 
-int8_t modulator_to_string(struct Modulator* modulator, char* dst)
-{
-	sprintf(dst, "0 | Frequency = %.2f Hz\n\r1 | Modulation Index = %.2f", modulator->frequency, modulator->modulation_index);
-}
-
-int8_t modulator_process(struct Modulator* modulator, float32_t* buf, int32_t block_size)
+int8_t modulator_process(struct Modulator* modulator, float32_t* src,
+ 	   	   	 	 	 	 float32_t* dst, int32_t block_size)
 {
 	float32_t period_max = 2.f * PI;
 	for (int32_t i = 0; i < block_size; i++)
 	{
-		buf[i] *= arm_sin_f32(modulator->phase) * modulator->modulation_index;
+		dst[i] = src[i] * arm_sin_f32(modulator->phase) * modulator->modulation_index;
 
 		modulator->phase += 2.f * 3.1416f * modulator->frequency / (float32_t) SAMPLE_RATE;
 		if (modulator->phase >= period_max)

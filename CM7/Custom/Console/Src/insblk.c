@@ -5,10 +5,9 @@
  *      Author: PC
  */
 
-#include "insblk.h"
-
-#include "console.h"
 #include "audio_engine.h"
+#include "insblk.h"
+#include "console.h"
 #include "audio_defs.h"
 #include "block_list.h"
 
@@ -18,9 +17,9 @@ void insblk(char** args, uint8_t argc)
 {
 	if (argc < 2)
 	{
-		console_println("insblk <name> <channel>");
-		console_println("name = name of the block to insert into the processing chain");
-		console_println("channel = into which channel will be block be put");
+		console_printf("insblk <name> <channel>\n\r");
+		console_printf("name = name of the block to insert into the processing chain\n\r");
+		console_printf("channel = into which channel will be block be put\n\r");
 		return;
 	}
 
@@ -28,12 +27,12 @@ void insblk(char** args, uint8_t argc)
 
 	if (!block)
 	{
-		console_println("Invalid block type");
+		console_printf("Invalid block type\n\r");
 		return;
 	}
 
 	uint8_t channel = atoi(args[1]);
 
 	audio_engine_insblk(channel, block);
-	console_println("Block inserted");
+	console_printf("Block inserted\n\r");
 }

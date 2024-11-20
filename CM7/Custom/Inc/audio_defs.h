@@ -1,6 +1,8 @@
 #ifndef __AUDIO_DEFS_H_
 #define __AUDIO_DEFS_H_
 
+#include <audio_stream.h>
+
 #define SAMPLE_RATE 48000
 
 #define AUDIO_BUF_TRESHOLD_HIGH 60
@@ -31,10 +33,11 @@
 #define ENULLPTR 5
 
 #define LOG_TIME_PRBLOCK_ID 0
-#define LOG_TIME_USB_RD 1
-#define LOG_TIME_USB_WR 2
-#define LOG_TIME_AUDIO_WR 3
-#define LOG_AUDENG_PROCESS 4
+#define LOG_TIME_USB_RD 3
+#define LOG_TIME_USB_WR 4
+#define LOG_TIME_AUDIO_WR 5
+#define LOG_AUDENG_PROCESS_1 1
+#define LOG_AUDENG_PROCESS_2 2
 
 extern uint8_t temp_next_block_ready;
 

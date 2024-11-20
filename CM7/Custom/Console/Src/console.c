@@ -12,9 +12,10 @@
 
 #include <string.h>
 #include <stdlib.h>
+#include <stdarg.h>
 
 #define CONSOLE_MAX_COMMANDS 32
-#define CONSOLE_BUFFER_SIZE 64
+#define CONSOLE_BUFFER_SIZE 128
 #define CONSOLE_MAX_ARGS 8
 
 #define KEY_ENTER 0x0D
@@ -24,15 +25,16 @@
 
 static char module_str[] = "[Console]";
 
-char STRING_PROMPT[] = "> ";
-char STRING_BACKSPACE[] = "\b \b";
-char STRING_NEWLINE[] = "\n\r";
+static char STRING_PROMPT[] = "> ";
+static char STRING_BACKSPACE[] = "\b \b";
+static char STRING_NEWLINE[] = "\n\r";
 
 static uint8_t console_buffer[CONSOLE_BUFFER_SIZE + 1];
 static uint8_t console_buffer_index;
+static char output_line_buffer[CONSOLE_BUFFER_SIZE];
 
-uint8_t console_initialized = 0;
-uint8_t registered_commands;
+static uint8_t console_initialized = 0;
+static uint8_t registered_commands;
 struct Command* command_list_head;
 
 static char* args[MAX_ARGS];
@@ -49,7 +51,7 @@ void console_init()
 	console_initialized = 1;
 }
 
-void console_print(char* str)
+static void console_print(char* str)
 {
 	if (!console_initialized)
 		return;
@@ -59,13 +61,25 @@ void console_print(char* str)
 		(serial_device, str, str_len);
 }
 
-void console_println(char* str)
+static void console_println(char* str)
 {
 	if (!console_initialized)
 			return;
 
 	console_print(str);
 	console_print(STRING_NEWLINE);
+}
+
+void console_printf(const char* fmt, ...)
+{
+	if (!console_initialized)
+			return;
+
+	va_list args;
+	va_start(args, fmt);
+	vsnprintf(output_line_buffer, CONSOLE_BUFFER_SIZE, fmt, args);
+	va_end(args);
+	console_print(output_line_buffer);
 }
 
 void console_register_command(char* name, void (*func)())
@@ -97,7 +111,8 @@ void console_parse()
 	if (!console_initialized)
 		return;
 
-	if (console_buffer[0] == '\0' || console_buffer_index == 0)
+	if (console_buffer[0] == '\0' ||
+		console_buffer_index == 0)
 	{
 		console_print(STRING_NEWLINE);
 		console_print(STRING_PROMPT);
@@ -106,6 +121,7 @@ void console_parse()
 
 	uint8_t command_found = 0;
 	struct Command* curr = command_list_head;
+
 	while (curr)
 	{
 		if (strcmp(curr->name, console_buffer) == 0)
@@ -139,6 +155,42 @@ void console_parse()
 	}
 }
 
+void console_exec_script(char* str)
+{
+	uint32_t str_line_start = 0;
+	uint32_t str_pos = 0;
+
+	char line[CONSOLE_BUFFER_SIZE + 1];
+	line[CONSOLE_BUFFER_SIZE] = '\0';
+	char curr = *(str + str_pos);
+	while (curr != '\0')
+	{
+		curr = *(str + str_pos);
+
+		if (curr == '\n')
+		{
+			uint32_t str_line_size = str_pos - str_line_start;
+			if (str_line_size >= CONSOLE_BUFFER_SIZE)
+				return;
+
+			memcpy(line, str + str_line_start, str_line_size);
+			line[str_line_size] = '\0';
+			console_exec(line);
+			str_line_start += str_line_size + 1;
+		}
+		else if (curr == '\0')
+		{
+			break;
+		}
+		else
+		{
+
+		}
+		str_pos++;
+	}
+
+}
+
 void console_exec(char* str)
 {
 	console_print(str);
@@ -148,7 +200,10 @@ void console_exec(char* str)
 
 	for (uint8_t i = 0; i < console_buffer_index; i++)
 	{
-		if (console_buffer[i] == ' ')
+		if (console_buffer[i] == ' ' ||
+			console_buffer[i] == '\n' ||
+			console_buffer[i] == '\t' ||
+			console_buffer[i] == '\r')
 			console_buffer[i] = '\0';
 	}
 	console_buffer[console_buffer_index] = '\0';
@@ -188,4 +243,9 @@ void console_iteration()
 			break;
 		}
 	}
+}
+
+struct Command* console_get_command_list()
+{
+	return command_list_head;
 }

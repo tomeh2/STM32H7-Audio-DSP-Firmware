@@ -1,22 +1,23 @@
 /*
  * audio_engine.h
  *
- *  Created on: Aug 29, 2024
+ *  Created on: Nov 19, 2024
  *      Author: PC
  */
 
 #ifndef AUDIO_INC_AUDIO_ENGINE_H_
 #define AUDIO_INC_AUDIO_ENGINE_H_
 
-#include "channel.h"
+#include "block.h"
 #include "arm_math.h"
-#include "linked_list.h"
+#include "audio_stream.h"
 
-extern struct LinkedList processing_chain;
+#define NUM_AUDIO_STREAMS 2
 
-void audio_engine_init();
-void audio_engine_process(float32_t* buf, int32_t block_size);
-void audio_engine_insblk(uint8_t ch_id, struct Block* block);
-void audio_engine_rmblk(uint8_t ch_id, uint32_t index);
+int8_t audio_engine_init();
+int8_t audio_engine_process(float32_t* src, float32_t* dst, int32_t block_size);
+int8_t audio_engine_insblk(uint8_t stream_id, struct Block* block);
+int8_t audio_engine_rmblk(uint8_t stream_id, uint32_t index);
+struct AudioStream* audio_engine_get_stream(uint8_t stream_id);
 
 #endif /* AUDIO_INC_AUDIO_ENGINE_H_ */

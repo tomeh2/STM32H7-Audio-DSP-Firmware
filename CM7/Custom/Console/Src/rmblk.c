@@ -5,9 +5,10 @@
  *      Author: PC
  */
 
-#include "rmblk.h"
 #include "audio_engine.h"
+#include "rmblk.h"
 #include "console.h"
+#include "audio_defs.h"
 
 #include <stdlib.h>
 
@@ -15,15 +16,21 @@ void rmblk(char** args, uint8_t argc)
 {
 	if (argc < 2)
 	{
-		console_println("rmblk <channel> <index>");
-		console_println("Removes a block from the processing chain of the specified channel");
-		console_println("<channel> - Channel ID from which to remove the block");
-		console_println("<index> - Which block to remove");
+		console_printf("rmblk <index> <channel>\n\r");
+		console_printf("Removes a block from the processing chain of the specified channel\n\r");
+		console_printf("<index> - Which block to remove\n\r");
+		console_printf("<channel> - Channel ID from which to remove the block\n\r");
 		return;
 	}
 
-	uint8_t channel = atoi(args[0]);
-	uint32_t index = atoi(args[1]);
+	uint32_t index = atoi(args[0]);
+	uint8_t channel = atoi(args[1]);
+
+	if (channel > 1)
+	{
+		console_printf("Channel index out of range!\n\r");
+		return;
+	}
 
 	audio_engine_rmblk(channel, index);
 }

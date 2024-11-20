@@ -8,6 +8,7 @@
 #include "delay_line.h"
 #include "block.h"
 #include "audio_defs.h"
+#include "stdio.h"
 
 #define PARAM_TYPE_MASK 0xFFFF0000
 #define PARAM_INDEX_MASK 0x0000FFFF
@@ -152,7 +153,8 @@ uint8_t delayline_get_num_params(struct DelayLine* delay_line)
 	return delay_line->num_params;
 }
 
-int8_t delayline_process(struct DelayLine* delay_line, float32_t* buf, int32_t block_size)
+int8_t delayline_process(struct DelayLine* delay_line, float32_t* src,
+		 	 	 	 	 float32_t* dst, int32_t block_size)
 {
 	int32_t fb_index = -1;
 	if (delay_line->max_delay < delay_line->buf_size)
@@ -167,8 +169,8 @@ int8_t delayline_process(struct DelayLine* delay_line, float32_t* buf, int32_t b
 	float32_t fb_coeff = delay_line->feedback_coeff;
 	for (int32_t i = 0; i < block_size; i++)
 	{
-		delay_line->buffer[delay_line->head_index++] = buf[i] + delay_line->buffer[fb_index++] * fb_coeff;
-		buf[i] = 0.f;
+		delay_line->buffer[delay_line->head_index++] = src[i] + delay_line->buffer[fb_index++] * fb_coeff;
+		dst[i] = 0.f;
 
 		if (delay_line->head_index == delay_line->buf_size)
 			delay_line->head_index = 0;
@@ -186,7 +188,7 @@ int8_t delayline_process(struct DelayLine* delay_line, float32_t* buf, int32_t b
 
 		for (int32_t i = 0; i < block_size; i++)
 		{
-			buf[i] += delay_line->buffer[tap_index++] * tap_delay_coeff;
+			dst[i] += delay_line->buffer[tap_index++] * tap_delay_coeff;
 
 			if (tap_index == delay_line->buf_size)
 				tap_index = 0;
@@ -194,20 +196,6 @@ int8_t delayline_process(struct DelayLine* delay_line, float32_t* buf, int32_t b
 	}
 	return EOK;
 }
-
-void delayline_to_string(struct DelayLine* delay_line, char* dst)
-{
-	int str_written = 0;
-
-	for (uint16_t i = 0; i < delay_line->num_taps; i++)
-	{
-		str_written += sprintf(dst + str_written, "Tap Delay = %.2f Samples\n\r", delay_line->delay_times[i]);
-		str_written += sprintf(dst + str_written, "Tap Coeff = %.2f\n\r", delay_line->delay_coeffs[i]);
-	}
-	str_written += sprintf(dst + str_written, "FB Coeff = %.2f", delay_line->feedback_coeff);
-}
-
-
 
 
 

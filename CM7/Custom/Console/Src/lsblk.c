@@ -17,8 +17,7 @@ void lsblk(char** args, uint8_t argc)
 	char print_buf[128];
 	for (uint8_t i = 0; i < MAX_DSP_BLOCKS; i++)
 	{
-		sprintf(print_buf, "===== Block %u =====", i);
-		console_println(print_buf);
-		console_println(block_list[i].name);
+		sprintf(print_buf, "===== Block %u =====\n\r", i);
+		console_printf("%s\n\r%s\n\r", print_buf, block_list[i].name);
 	}
 }

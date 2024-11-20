@@ -45,11 +45,12 @@ extern int8_t delayline_init(struct DelayLine* delay_line,
 							 int32_t max_delay,
 							 int32_t block_size);
 int8_t delayline_destroy(struct DelayLine* delay_line);
-int8_t delayline_process(struct DelayLine* delay_line, float32_t* buf, int32_t block_size);
+int8_t delayline_process(struct DelayLine* delay_line,
+						 float32_t* src,
+						 float32_t* dst,
+						 int32_t block_size);
 int8_t delayline_set_param(struct DelayLine* delay_line, uint32_t index, float32_t value);
 int8_t delayline_get_param(struct DelayLine* delay_line, uint32_t index, float32_t* dst);
 int8_t delayline_get_param_string(struct DelayLine* delay_line, uint32_t index, char* dst);
 uint8_t delayline_get_num_params(struct DelayLine* delay_line);
-void delayline_to_string(struct DelayLine* delay_line, char* dst);
-
 #endif /* DSP_INC_DELAY_LINE_H_ */

@@ -1,61 +1,53 @@
 /*
  * audio_engine.c
  *
- *  Created on: Aug 29, 2024
+ *  Created on: Nov 19, 2024
  *      Author: PC
  */
 
-#include "block_list.h"
-#include "audio_defs.h"
-#include "arm_math.h"
-#include "console.h"
 #include "audio_engine.h"
-#include "linked_list.h"
+#include "audio_defs.h"
 
-#define NUM_CHANNELS 2
+static struct AudioStream audio_streams[NUM_AUDIO_STREAMS];
 
-struct LinkedList processing_chain;
-
-void audio_engine_init()
+int8_t audio_engine_init()
 {
-
-}
-
-void audio_engine_process(float32_t* buf, int32_t block_size)
-{
-	struct LinkedListElement* curr = processing_chain.head;
-	while (curr)
+	for (uint8_t i = 0; i < NUM_AUDIO_STREAMS; i++)
 	{
-		struct Block* curr_blk = curr->element;
-		curr_blk->process(curr_blk->dsp_struct_ptr, buf, block_size);
-		curr = curr->next;
+		audio_stream_init(&audio_streams[i]);
 	}
 }
 
-void audio_engine_insblk(uint8_t ch_id, struct Block* block)
+int8_t audio_engine_process(float32_t* src, float32_t* dst, int32_t block_size)
 {
-	if (ch_id >= NUM_CHANNELS)
+	for (uint8_t i = 0; i < NUM_AUDIO_STREAMS; i++)
 	{
-		console_println("[Audio Engine] Invalid channel ID");
-		return;
+		audio_stream_process(&audio_streams[i], &src[i * block_size], &dst[i * block_size], block_size);
 	}
-
-	if (!block)
-	{
-		console_println("[Audio Engine] Tried to insert a NULL block");
-		return;
-	}
-
-	linkedlist_insert(&processing_chain, block, 100);
 }
 
-void audio_engine_rmblk(uint8_t ch_id, uint32_t index)
+int8_t audio_engine_insblk(uint8_t stream_id, struct Block* block)
 {
-	if (ch_id >= NUM_CHANNELS)
-	{
-		console_println("[Audio Engine] Invalid channel ID");
-		return;
-	}
+	if (stream_id >= NUM_AUDIO_STREAMS)
+		return -EOOB;
 
-	linkedlist_remove(&processing_chain, index);
+	audio_stream_insblk(&audio_streams[stream_id], block);
+	return EOK;
+}
+
+int8_t audio_engine_rmblk(uint8_t stream_id, uint32_t index)
+{
+	if (stream_id >= NUM_AUDIO_STREAMS)
+		return -EOOB;
+
+	audio_stream_rmblk(&audio_streams[stream_id], index);
+	return EOK;
+}
+
+struct AudioStream* audio_engine_get_stream(uint8_t stream_id)
+{
+	if (stream_id >= NUM_AUDIO_STREAMS)
+		return NULL;
+
+	return &audio_streams[stream_id];
 }

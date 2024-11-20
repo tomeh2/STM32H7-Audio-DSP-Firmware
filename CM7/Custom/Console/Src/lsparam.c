@@ -14,9 +14,9 @@ void lsparam(char** args, uint8_t argc)
 {
 	if (argc < 1)
 	{
-		console_println("lsparam <block_name>");
-		console_println("Lists all parameters contained in the <block_name> block");
-		console_println("<block_name> - Name of the block whose parameters will be listed");
+		console_printf("lsparam <block_name>\n\r");
+		console_printf("Lists all parameters contained in the <block_name> block\n\r");
+		console_printf("<block_name> - Name of the block whose parameters will be listed\n\r");
 		return;
 	}
 
@@ -24,28 +24,28 @@ void lsparam(char** args, uint8_t argc)
 
 	if (!block)
 	{
-		console_println("Block does not exist");
+		console_printf("Block does not exist\n\r");
 		return;
 	}
 
 	if (!block->get_num_params)
 	{
-		console_println("Block does not implement get_num_params function");
+		console_printf("Block does not implement get_num_params function\n\r");
 		return;
 	}
 
 	if (!block->get_param_string)
 	{
-		console_println("Block does not implement get_param_str function");
+		console_printf("Block does not implement get_param_str function\n\r");
 		return;
 	}
 
-	char print_buf[128];
+	char param_str[128];
 	uint8_t num_params = block_get_num_params(block);
 	for (uint8_t i = 0; i < num_params; i++)
 	{
-		block_get_param_string(block, i, print_buf);
-		console_println(print_buf);
+		block_get_param_string(block, i, param_str);
+		console_printf("%s\n\r", param_str);
 	}
 }
 

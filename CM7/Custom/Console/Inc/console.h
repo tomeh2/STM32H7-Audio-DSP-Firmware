@@ -10,16 +10,13 @@
 
 #include "interface.h"
 
-extern void console_init();
-extern void console_print(char* str);
-extern void console_println(char* str);
-extern void console_exec(char* str);
-extern void console_register_command(char* name, void (*func)());
-extern void console_iteration();
-
-extern char STRING_PROMPT[];
-extern char STRING_NEWLINE[];
-extern char STRING_BACKSPACE[];
+void console_init();
+void console_printf(const char* fmt, ...);
+void console_exec_script(char* str);
+void console_exec(char* str);
+void console_register_command(char* name, void (*func)());
+struct Command* console_get_command_list();
+void console_iteration();
 
 struct Command
 {
@@ -27,8 +24,5 @@ struct Command
 	void (*func)(char** args, uint8_t argc);
 	struct Command* next;
 };
-
-extern uint8_t registered_commands;
-extern struct Command* command_list_head;
 
 #endif /* CONSOLE_INC_CONSOLE_H_ */

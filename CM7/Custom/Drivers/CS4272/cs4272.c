@@ -13,10 +13,10 @@
 #define MAX_CHANNELS 2
 #define RXTX_BUFFER_SIZE (SAMPLES_PER_BLOCK * MAX_CHANNELS * 2)
 
-static int32_t tx_buf[RXTX_BUFFER_SIZE];
-static int32_t rx_buf[RXTX_BUFFER_SIZE];
-static int32_t* inactive_tx_buf = tx_buf;
-static int32_t* inactive_rx_buf = rx_buf;
+static volatile int32_t tx_buf[RXTX_BUFFER_SIZE];
+static volatile int32_t rx_buf[RXTX_BUFFER_SIZE];
+static volatile int32_t* inactive_tx_buf = tx_buf;
+static volatile int32_t* inactive_rx_buf = rx_buf;
 
 static uint8_t is_running = 0;
 

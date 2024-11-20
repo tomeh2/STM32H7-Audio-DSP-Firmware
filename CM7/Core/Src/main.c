@@ -17,6 +17,7 @@
  */
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
+#include "audio_engine.h"
 #include "main.h"
 #include "usb_device.h"
 
@@ -44,14 +45,13 @@
 #include "setparam.h"
 #include "mkdelay.h"
 #include "mkbiquad.h"
+#include "mkeq.h"
 #include "block_list.h"
 #include "con_modulator.h"
 #include "logger.h"
 #include "usb_audio_driver.h"
 #include "usbd_audio_if.h"
 #include "usbd_core.h"
-#include "audio_engine.h"
-
 #include "arm_math.h"
 /* USER CODE END Includes */
 
@@ -129,12 +129,44 @@ struct Interface usb_driver =
 };
 
 float32_t processing_buffers[SAMPLES_PER_BLOCK * NUM_CHANNELS];
+float32_t processing_buffers2[SAMPLES_PER_BLOCK * NUM_CHANNELS];
 
 uint8_t temp_next_block_ready;
+
+char* script_delaylines =
+	"mkdelay dl_0 2 50000\n\
+setparam dl_0 0 0\n\
+setparam dl_0 1 24000\n\
+setparam dl_0 2 1.0\n\
+setparam dl_0 3 0.5\n\
+setparam dl_0 4 0.25\n\
+mkdelay dl_1 2 50000\n\
+setparam dl_1 0 0\n\
+setparam dl_1 1 24000\n\
+setparam dl_1 2 1.0\n\
+setparam dl_1 3 0.5\n\
+setparam dl_1 4 0.25\n\
+insblk dl_0 0\n\
+insblk dl_1 1\n\
+END";
+
+char* script_filters =
+	"mkbiquad bq_0 2 220 0.5 2 48000\n\
+insblk bq_0 0\n\
+mkbiquad bq_1 0 220 0.5 2 48000\n\
+insblk bq_1 1\n\
+END";
+
+char* script_eq =
+	"mkeq eq_0\n\
+insblk eq_0 0\n\
+END";
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
+static void MPU_Initialize(void);
+static void MPU_Config(void);
 static void MX_GPIO_Init(void);
 static void MX_DMA_Init(void);
 static void MX_DAC1_Init(void);
@@ -157,12 +189,10 @@ inline static void process_block()
 	usb_device->io_ops->read(usb_device, processing_buffers, SAMPLES_PER_BLOCK * 2);
 	LOG_TIME_STOP(LOG_TIME_USB_RD);
 
-	LOG_TIME_START(LOG_AUDENG_PROCESS);
-	audio_engine_process(processing_buffers, SAMPLES_PER_BLOCK);
-	LOG_TIME_STOP(LOG_AUDENG_PROCESS);
+	audio_engine_process(processing_buffers, processing_buffers2, SAMPLES_PER_BLOCK);
 
 	LOG_TIME_START(LOG_TIME_AUDIO_WR);
-	audio_device->io_ops->write(audio_device, processing_buffers, SAMPLES_PER_BLOCK);
+	audio_device->io_ops->write(audio_device, processing_buffers2, SAMPLES_PER_BLOCK);
 	LOG_TIME_STOP(LOG_TIME_AUDIO_WR);
 
 	LOG_TIME_STOP(LOG_TIME_PRBLOCK_ID);
@@ -185,10 +215,10 @@ int main(void)
 /* USER CODE END Boot_Mode_Sequence_0 */
 
   /* Enable I-Cache---------------------------------------------------------*/
-  //SCB_EnableICache();
+  SCB_EnableICache();
 
   /* Enable D-Cache---------------------------------------------------------*/
-  //SCB_EnableDCache();
+  SCB_EnableDCache();
 
 /* USER CODE BEGIN Boot_Mode_Sequence_1 */
 	/* Wait until CPU2 boots and enters in stop mode or timeout*/
@@ -203,6 +233,9 @@ int main(void)
 
   /* Reset of all peripherals, Initializes the Flash interface and the Systick. */
   HAL_Init();
+
+  /* MPU Configuration--------------------------------------------------------*/
+  //MPU_Config();
 
   /* USER CODE BEGIN Init */
 
@@ -244,7 +277,8 @@ HSEM notification */
   logger_timer_set_name(LOG_TIME_USB_RD, "usb_driver_read");
   logger_timer_set_name(LOG_TIME_USB_WR, "usb_driver_write");
   logger_timer_set_name(LOG_TIME_AUDIO_WR, "audio_driver_write");
-  logger_timer_set_name(LOG_AUDENG_PROCESS, "audio_engine_process");
+  logger_timer_set_name(LOG_AUDENG_PROCESS_1, "audio_stream_1_process");
+  logger_timer_set_name(LOG_AUDENG_PROCESS_2, "audio_stream_2_process");
 #endif
   HAL_Delay(100);
   drvman_init();
@@ -253,11 +287,11 @@ HSEM notification */
   console_init();
 
   for (size_t i = 0; i < 25; i++)
-	  console_println("");
+	  console_printf("");
 
-  console_println("=========================================");
-  console_println("      Audio Processor Firmware v0.1      ");
-  console_println("=========================================");
+  console_printf("=========================================\n\r");
+  console_printf("      Audio Processor Firmware v0.1      \n\r");
+  console_printf("=========================================\n\r");
 
   blocklist_init();
 
@@ -267,29 +301,13 @@ HSEM notification */
   console_register_command("mkdelay\0", mkdelay);
   console_register_command("mkmod\0", modulator_create);
   console_register_command("mkbiquad\0", mkbiquad);
+  console_register_command("mkeq\0", mkeq);
   console_register_command("insblk\0", insblk);
   console_register_command("rmblk\0", rmblk);
   console_register_command("lsdrv\0", lsdrv);
   console_register_command("lsparam\0", lsparam);
   console_register_command("lschain\0", lschain);
   console_register_command("setparam\0", setparam);
-
-  console_exec("\r");
-  console_exec("mkdelay dl_0 2 50000");
-  console_exec("setparam dl_0 0 0");
-  console_exec("setparam dl_0 1 24000");
-  console_exec("setparam dl_0 2 1.0");
-  console_exec("setparam dl_0 3 0.5");
-  console_exec("setparam dl_0 4 0.25");
-  //console_exec("insblk dl_0 0");
-  console_exec("mkmod mod_0");
-  console_exec("setparam mod_0 0 440");
-  console_exec("setparam mod_0 1 0.75");
-  //console_exec("insblk mod_0 0");
-  console_exec("mkbiquad bq_0 4 2000 30.0 48000");
-  //console_exec("insblk bq_0 0");
-
-  //while (audio_source_buffer->bytes_free * 100 / audio_source_buffer->size > AUDIO_USB_BUF_TRESHOLD_START);
 
   drvman_register_driver(&mcu_internal_driver);
   drvman_register_driver(&cs4272_driver);
@@ -299,6 +317,9 @@ HSEM notification */
   drvman_set_usb_driver(3);
 
   audio_engine_init();
+
+  console_exec("");
+  console_exec_script(script_eq);
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -703,6 +724,35 @@ static void MX_GPIO_Init(void)
 /* USER CODE BEGIN 4 */
 
 /* USER CODE END 4 */
+
+/* MPU Configuration */
+
+void MPU_Config(void)
+{
+  MPU_Region_InitTypeDef MPU_InitStruct = {0};
+
+  /* Disables the MPU */
+  HAL_MPU_Disable();
+
+  /** Initializes and configures the Region and the memory to be protected
+  */
+  MPU_InitStruct.Enable = MPU_REGION_ENABLE;
+  MPU_InitStruct.Number = MPU_REGION_NUMBER0;
+  MPU_InitStruct.BaseAddress = 0x24080000;
+  MPU_InitStruct.Size = MPU_REGION_SIZE_8KB;
+  MPU_InitStruct.SubRegionDisable = 0x0;
+  MPU_InitStruct.TypeExtField = MPU_TEX_LEVEL0;
+  MPU_InitStruct.AccessPermission = MPU_REGION_FULL_ACCESS;
+  MPU_InitStruct.DisableExec = MPU_INSTRUCTION_ACCESS_ENABLE;
+  MPU_InitStruct.IsShareable = MPU_ACCESS_NOT_SHAREABLE;
+  MPU_InitStruct.IsCacheable = MPU_ACCESS_NOT_CACHEABLE;
+  MPU_InitStruct.IsBufferable = MPU_ACCESS_BUFFERABLE;
+
+  HAL_MPU_ConfigRegion(&MPU_InitStruct);
+  /* Enables the MPU */
+  HAL_MPU_Enable(MPU_HARDFAULT_NMI);
+
+}
 
 /**
   * @brief  This function is executed in case of error occurrence.

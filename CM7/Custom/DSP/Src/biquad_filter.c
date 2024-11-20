@@ -19,7 +19,15 @@ const char TYPE_HIGHPASS[] = "HIGHPASS";
 const char TYPE_ALLPASS[] = "ALLPASS";
 const char TYPE_NOTCH[] = "NOTCH";
 
-const char* TYPE_STRINGS[] = {TYPE_LOWPASS, TYPE_BANDPASS, TYPE_HIGHPASS, TYPE_ALLPASS, TYPE_NOTCH};
+const char* BIQUAD_TYPES_STRING[] = {
+		"LOWPASS",
+		"BANDPASS",
+		"HIGHPASS",
+		"ALLPASS",
+		"NOTCH"
+};
+
+arm_biquad_casd_df1_inst_f32 test;
 
 void __calculate_coefficients(float32_t* coeffs,
 							  float32_t Fc,
@@ -85,49 +93,95 @@ void biquad_filter_init(struct BiquadFilter* bf,
 						float32_t Fc,
 						float32_t Fs,
 						float32_t Q,
+						uint8_t order,
 						enum BiquadFilterType type)
 {
 	bf->type = type;
 	bf->Fc = Fc;
 	bf->Fs = Fs;
 	bf->Q = Q;
+	bf->order = order;
+	if (order > MAX_ORDER)
+	{
+		bf->order = MAX_ORDER;
+	}
+
+	for (uint32_t i = 0; i < 2 * (MAX_ORDER + 1); i++)
+		bf->history_buffer[i] = 0.f;
+
 
 	__calculate_coefficients(bf->coeffs,
 							 Fc,
 							 Fs,
 							 Q,
 							 type);
-
-	bf->input_history[0] = 0.f;
-	bf->input_history[1] = 0.f;
-	bf->input_history[2] = 0.f;
-
-	bf->output_history[0] = 0.f;
-	bf->output_history[1] = 0.f;
-	bf->output_history[2] = 0.f;
 }
 
 void biquad_filter_process(struct BiquadFilter* bf,
-						   float32_t* buf,
+						   float32_t* src,
+						   float32_t* dst,
 						   int32_t block_size)
 {
-	float32_t next_output = 0.f;
-	for (int32_t i = 0; i < block_size; i++)
+	float32_t* curr_src = src;
+	float32_t b0, b1, b2, a1, a2;
+	b0 = bf->coeffs[0];
+	b1 = bf->coeffs[1];
+	b2 = bf->coeffs[2];
+	a1 = bf->coeffs[3];
+	a2 = bf->coeffs[4];
+	float32_t Xn2, Xn1, Xn, Yn2, Yn1;
+	float32_t* hist_buf_ptr = bf->history_buffer;
+	for (int32_t i = 0; i < bf->order; i++)
 	{
-		bf->input_history[2] = bf->input_history[1];
-		bf->input_history[1] = bf->input_history[0];
-		bf->input_history[0] = buf[i];
+		Xn = curr_src[0];
+		Xn1 = hist_buf_ptr[0];
+		Xn2 = hist_buf_ptr[1];
+		Yn1 = hist_buf_ptr[2];
+		Yn2 = hist_buf_ptr[3];
 
-		next_output = bf->coeffs[0] * bf->input_history[0] +
-			bf->coeffs[1] * bf->input_history[1] +
-			bf->coeffs[2] * bf->input_history[2] -
-			bf->coeffs[3] * bf->output_history[0] -
-			bf->coeffs[4] * bf->output_history[1];
-		buf[i] = next_output;
+		for (int32_t j = 0; j < block_size; j += 4)
+		{
+			Xn = curr_src[j];
+			Yn2 = b0 * Xn +
+				  b1 * Xn1 +
+				  b2 * Xn2 -
+				  a1 * Yn1 -
+				  a2 * Yn2;
+			dst[j] = Yn2;
 
-		bf->output_history[2] = bf->output_history[1];
-		bf->output_history[1] = bf->output_history[0];
-		bf->output_history[0] = next_output;
+			Xn2 = curr_src[j + 1];
+			Yn1 = b0 * Xn2 +
+				  b1 * Xn +
+				  b2 * Xn1 -
+				  a1 * Yn2 -
+				  a2 * Yn1;
+			dst[j + 1] = Yn1;
+
+			Xn1 = curr_src[j + 2];
+			Yn2 = b0 * Xn1 +
+				  b1 * Xn2 +
+				  b2 * Xn -
+				  a1 * Yn1 -
+				  a2 * Yn2;
+			dst[j + 2] = Yn2;
+
+			Xn = curr_src[j + 3];
+			Yn1 = b0 * Xn +
+				  b1 * Xn1 +
+				  b2 * Xn2 -
+				  a1 * Yn2 -
+				  a2 * Yn1;
+			dst[j + 3] = Yn1;
+
+			Xn2 = Xn1;
+			Xn1 = Xn;
+		}
+		curr_src = dst;
+
+		*hist_buf_ptr++ = Xn1;
+		*hist_buf_ptr++ = Xn2;
+		*hist_buf_ptr++ = Yn1;
+		*hist_buf_ptr++ = Yn2;
 	}
 }
 
@@ -137,29 +191,33 @@ int8_t biquad_filter_get_param_string(struct BiquadFilter* bf,
 {
 	if (index == 0)
 	{
-		sprintf(dst, "%u | Fc = %.2f Hz", index, bf->Fc);
+		sprintf(dst, "%u | Type = %s", index, BIQUAD_TYPES_STRING[bf->type]);
 		return EOK;
 	}
 	else if (index == 1)
 	{
-		sprintf(dst, "%u | Q = %.2f", index, bf->Q);
+		sprintf(dst, "%u | Fc = %.2f Hz", index, bf->Fc);
 		return EOK;
 	}
 	else if (index == 2)
 	{
+		sprintf(dst, "%u | Q = %.2f", index, bf->Q);
+		return EOK;
+	}
+	else if (index == 3)
+	{
 		sprintf(dst, "%u | Fs = %.2f Hz", index, bf->Fs);
+		return EOK;
+	}
+	else if (index == 4)
+	{
+		sprintf(dst, "%u | Order = %u", index, bf->order);
 		return EOK;
 	}
 	return -EOOB;
 }
 
-void biquad_filter_to_string(struct BiquadFilter* bf,
-		 	 	 	 	 	 char* dst)
-{
-	sprintf(dst, "0 | Type = %s\n\r1 | Fc = %.2f Hz\n\r2 | Q = %.2f\n\r3 | Fs = %.2f Hz", TYPE_STRINGS[bf->type], bf->Fc, bf->Q, bf->Fs);
-}
-
 uint8_t biquad_filter_get_num_params(struct BiquadFilter* bf)
 {
-	return 3;
+	return 5;
 }

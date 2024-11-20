@@ -11,6 +11,8 @@
 #include <stdint.h>
 #include "arm_math.h"
 
+#define MAX_ORDER 8
+
 enum BiquadFilterType
 {
 	LOWPASS = 0,
@@ -27,8 +29,8 @@ struct BiquadFilter
 	float32_t Fc;
 	float32_t Fs;
 	float32_t Q;
-	float32_t input_history[3];
-	float32_t output_history[3];
+	uint8_t order;
+	float32_t history_buffer[2 * (MAX_ORDER + 1)];
 };
 
 /*
@@ -41,14 +43,13 @@ void biquad_filter_init(struct BiquadFilter* bf,
 						float32_t Fc,
 						float32_t Fs,
 						float32_t Q,
+						uint8_t order,
 						enum BiquadFilterType type);
 
 void biquad_filter_process(struct BiquadFilter* bf,
-						   float32_t* buf,
+						   float32_t* src,
+						   float32_t* dst,
 						   int32_t block_size);
-
-void biquad_filter_to_string(struct BiquadFilter* bf,
-							 char* dst);
 
 int8_t biquad_filter_get_param_string(struct BiquadFilter* bf,
 									  uint8_t index,

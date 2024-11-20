@@ -17,10 +17,10 @@ void mkdelay(char** args, uint8_t argc)
 {
 	if (argc < 2)
 	{
-		console_println("Usage: delayline_create <name> <num_taps> <max_delay>");
-		console_println("name = string which is used to reference this block");
-		console_println("num_taps = maximum number of taps for this delay line");
-		console_println("max_delay = maximum possible delay in number of samples");
+		console_printf("Usage: delayline_create <name> <num_taps> <max_delay>\n\r");
+		console_printf("name = string which is used to reference this block\n\r");
+		console_printf("num_taps = maximum number of taps for this delay line\n\r");
+		console_printf("max_delay = maximum possible delay in number of samples\n\r");
 		return;
 	}
 
@@ -30,7 +30,7 @@ void mkdelay(char** args, uint8_t argc)
 	struct DelayLine* new_delayline = malloc(sizeof(struct DelayLine));
 	if (!new_delayline)
 	{
-		console_println("Failed to allocate memory for DelayLine block");
+		console_printf("Failed to allocate memory for DelayLine block\n\r");
 		return;
 	}
 
@@ -38,7 +38,7 @@ void mkdelay(char** args, uint8_t argc)
 	if (err)
 	{
 		delayline_destroy(new_delayline);
-		console_println("Failed to create DelayLine block");
+		console_printf("Failed to create DelayLine block\n\r");
 		return;
 	}
 
@@ -48,12 +48,11 @@ void mkdelay(char** args, uint8_t argc)
 						 delayline_set_param,
 						 delayline_get_param,
 						 delayline_get_param_string,
-						 delayline_get_num_params,
-						 delayline_to_string) == -1)
+						 delayline_get_num_params) != EOK)
 	{
-		console_println("Failed inserting the DelayLine block into the block list");
+		console_printf("Failed inserting the DelayLine block into the block list\n\r");
 		delayline_destroy(new_delayline);
 		return;
 	}
-	console_println("DelayLine block created");
+	console_printf("DelayLine block created\n\r");
 }

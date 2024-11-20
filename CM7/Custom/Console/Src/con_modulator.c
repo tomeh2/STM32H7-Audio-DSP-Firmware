@@ -16,8 +16,8 @@ void modulator_create(char** args, uint8_t argc)
 {
 	if (argc < 1)
 	{
-		console_println("modulator_create <name>");
-		console_println("name = string which will be used to reference this block");
+		console_printf("modulator_create <name>\n\r");
+		console_printf("name = string which will be used to reference this block\n\r");
 		return;
 	}
 
@@ -28,7 +28,7 @@ void modulator_create(char** args, uint8_t argc)
 
 	if (!new_modulator)
 	{
-		console_println("Failed to create a modulator");
+		console_printf("Failed to create a modulator\n\r");
 		return;
 	}
 
@@ -38,12 +38,11 @@ void modulator_create(char** args, uint8_t argc)
 						 modulator_set_param,
 						 modulator_get_param,
 						 modulator_get_param_string,
-						 modulator_get_num_params,
-						 modulator_to_string) == -1)
+						 modulator_get_num_params) != 0)
 	{
-		console_println("Failed inserting the modulator block into the block list");
+		console_printf("Failed inserting the modulator block into the block list\n\r");
 		modulator_destroy(new_modulator);
 		return;
 	}
-	console_println("Modulator block created");
+	console_printf("Modulator block created\n\r");
 }

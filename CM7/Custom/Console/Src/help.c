@@ -9,12 +9,12 @@
 
 void help(char** args, uint8_t argc)
 {
-	struct Command* curr = command_list_head;
+	struct Command* curr = console_get_command_list();
 
 	while (curr)
 	{
-		console_print(curr->name);
-		console_print(STRING_NEWLINE);
+		console_printf(curr->name);
+		console_printf("\n\r");
 		curr = curr->next;
 	}
 }

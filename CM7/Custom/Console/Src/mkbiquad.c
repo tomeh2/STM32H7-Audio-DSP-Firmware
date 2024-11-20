@@ -15,30 +15,32 @@
 
 void mkbiquad(char** args, uint8_t argc)
 {
-	if (argc < 4)
+	if (argc < 6)
 	{
-		console_println("Usage: mkbiquad <name> <type> <center_freq> <Q> <sample_rate>");
-		console_println("name = string which is used to reference this block");
-		console_println("type = [0 - LPF] [1 - BPF] [2 - HPF]");
-		console_println("center_freq = center frequency of this band-pass filter");
-		console_println("Q = Q factor");
-		console_println("sample_rate = sample rate of the audio engine");
+		console_printf("Usage: mkbiquad <name> <type> <center_freq> <Q> <order> <sample_rate>\n\r");
+		console_printf("name = string which is used to reference this block\n\r");
+		console_printf("type = [0 - LPF] [1 - BPF] [2 - HPF]\n\r");
+		console_printf("center_freq = center frequency of this band-pass filter\n\r");
+		console_printf("Q = Q factor");
+		console_printf("order = number of cascaded instances of the filter\n\r");
+		console_printf("sample_rate = sample rate of the audio engine\n\r");
 		return;
 	}
 
 	int32_t filter_type = atof(args[1]);
 	float center_freq = atof(args[2]);
 	float Q = atof(args[3]);
-	float sr = atof(args[4]);
+	int order = atof(args[4]);
+	float sr = atof(args[5]);
 
 	struct BiquadFilter* new_biquad = malloc(sizeof(struct BiquadFilter));
 	if (!new_biquad)
 	{
-		console_println("Failed to allocate memory for BiquadFilter block");
+		console_printf("Failed to allocate memory for BiquadFilter block\n\r");
 		return;
 	}
 
-	biquad_filter_init(new_biquad, center_freq, sr, Q, filter_type);
+	biquad_filter_init(new_biquad, center_freq, sr, Q, order, filter_type);
 	/*if (err)
 	{
 		biquad_filter_destroy(new_biquad);
@@ -52,12 +54,11 @@ void mkbiquad(char** args, uint8_t argc)
 						 NULL,
 						 NULL,
 						 biquad_filter_get_param_string,
-						 biquad_filter_get_num_params,
-						 biquad_filter_to_string))
+						 biquad_filter_get_num_params) != EOK)
 	{
-		console_println("Failed inserting the BiquadFilter block into the block list");
+		console_printf("Failed inserting the BiquadFilter block into the block list\n\r");
 		//biquad_filter_destroy(new_biquad);
 		return;
 	}
-	console_println("BiquadFilter block created");
+	console_printf("BiquadFilter block created\n\r");
 }

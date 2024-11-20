@@ -7,6 +7,8 @@
 
 #include "setparam.h"
 #include "block.h"
+#include "block_list.h"
+#include "console.h"
 
 #include <stdlib.h>
 
@@ -14,11 +16,11 @@ void setparam(char** args, uint8_t argc)
 {
 	if (argc < 3)
 	{
-		console_println("setparam <block_name> <index> <value>");
-		console_println("Sets the identified parameter to a specified value");
-		console_println("<block_name> - Name of the block whose parameter will be set");
-		console_println("<index> - Index of the parameter to be set");
-		console_println("<value> - Value to which the parameter will be set");
+		console_printf("setparam <block_name> <index> <value>\n\r");
+		console_printf("Sets the identified parameter to a specified value\n\r");
+		console_printf("<block_name> - Name of the block whose parameter will be set\n\r");
+		console_printf("<index> - Index of the parameter to be set\n\r");
+		console_printf("<value> - Value to which the parameter will be set\n\r");
 		return;
 	}
 
@@ -28,13 +30,13 @@ void setparam(char** args, uint8_t argc)
 
 	if (!block)
 	{
-		console_println("Block does not exist");
+		console_printf("Block does not exist\n\r");
 		return;
 	}
 	int8_t err = block_set_param(block, index, value);
 
 	if (err)
 	{
-		console_println("Failed to set the parameter");
+		console_printf("Failed to set the parameter\n\r");
 	}
 }

@@ -24,7 +24,7 @@ int8_t modulator_set_param(struct Modulator* modulator, uint32_t index, float32_
 int8_t modulator_get_param(struct Modulator* modulator, uint32_t index, float32_t* dst);
 int8_t modulator_get_param_string(struct Modulator* modulator, uint32_t index, char* dst);
 uint8_t modulator_get_num_params(struct Modulator* modulator);
-int8_t modulator_to_string(struct Modulator* modulator, char* dst);
-int8_t modulator_process(struct Modulator* modulator, float32_t* buf, int32_t block_size);
+int8_t modulator_process(struct Modulator* modulator, float32_t* src,
+		   	   	   	   	 float32_t* dst, int32_t block_size);
 
 #endif /* DSP_INC_MODULATOR_H_ */
