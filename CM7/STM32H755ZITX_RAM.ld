@@ -177,6 +177,15 @@ SECTIONS
     . = ALIGN(8);
   } >RAM_D1
 
+  /* Uncacheable memory region for DMA */
+  .dma_region :
+  {
+	. = ABSOLUTE(0x24070000);
+	*(.i2s_tx)
+	. = ABSOLUTE(0x24070100);
+	*(.i2s_rx)
+  } >RAM_D1
+
   /* Remove information from the compiler libraries */
   /DISCARD/ :
   {

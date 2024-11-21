@@ -183,6 +183,16 @@ SECTIONS
     libm.a ( * )
     libgcc.a ( * )
   }
+  
+  /* Uncacheable memory region for DMA */
+  .dma_region :
+  {
+  	. = ALIGN(1);
+	. = ABSOLUTE(0x24070000);
+	*(.i2s_tx)
+	. = ABSOLUTE(0x24070800);
+	*(.i2s_rx)
+  } >RAM_D1
 
   .ARM.attributes 0 : { *(.ARM.attributes) }
 }
