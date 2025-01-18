@@ -8,7 +8,7 @@
 #ifndef INC_USB_AUDIO_DRIVER_H_
 #define INC_USB_AUDIO_DRIVER_H_
 
-#include "interface.h"
+#include "host_driver.h"
 #include <stdint.h>
 
 struct USBAudioClassDriverPrivate
@@ -16,6 +16,6 @@ struct USBAudioClassDriverPrivate
 
 };
 
-extern struct InterfaceOperations usb_audio_class_driver;
+extern struct HostInterfaceOps usb_audio_class_driver;
 
 #endif /* INC_USB_DRIVER_H_ */

@@ -49,9 +49,8 @@
 #include "con_modulator.h"
 #include "logger.h"
 #include "usb_audio_driver.h"
-#include "usbd_audio_if.h"
-#include "usbd_core.h"
 #include "arm_math.h"
+#include "audio_engine.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -91,7 +90,6 @@ TIM_HandleTypeDef htim6;
 UART_HandleTypeDef huart3;
 
 /* USER CODE BEGIN PV */
-extern USBD_HandleTypeDef hUsbDeviceFS;
 
 struct Interface mcu_internal_driver =
 {
@@ -120,7 +118,7 @@ struct Interface cs4272_driver =
 		.private_data = &cs4272_pd
 };
 
-struct Interface usb_driver =
+struct HostInterface usb_driver =
 {
 		.io_ops = &usb_audio_class_driver,
 		.name = "USB Audio Class Driver",
@@ -180,12 +178,14 @@ static void MX_TIM2_Init(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
+static float32_t test[128];
+static float32_t t = 0;
 inline static void process_block()
 {
 	LOG_TIME_START(LOG_TIME_PRBLOCK_ID);
 
 	LOG_TIME_START(LOG_TIME_USB_RD);
-	usb_device->io_ops->read(usb_device, processing_buffers, SAMPLES_PER_BLOCK * 2);
+	usb_device->io_ops->dev_data_read(usb_device, processing_buffers, SAMPLES_PER_BLOCK * 2);
 	LOG_TIME_STOP(LOG_TIME_USB_RD);
 
 	audio_engine_process(processing_buffers, processing_buffers2, SAMPLES_PER_BLOCK);
@@ -193,6 +193,15 @@ inline static void process_block()
 	LOG_TIME_START(LOG_TIME_AUDIO_WR);
 	audio_device->io_ops->write(audio_device, processing_buffers2, SAMPLES_PER_BLOCK);
 	LOG_TIME_STOP(LOG_TIME_AUDIO_WR);
+
+	for (size_t i = 0; i < 128; i++)
+	{
+		test[i] = sin(t);
+		t += 2.f * 3.1415f * 20.f / 48000.f;
+		if (t >= 2.f * 3.1415f)
+			t -= 2.f * 3.1415f;
+	}
+	usb_device->io_ops->dev_data_write(usb_device, test, 128);
 
 	LOG_TIME_STOP(LOG_TIME_PRBLOCK_ID);
 }
@@ -214,10 +223,10 @@ int main(void)
 /* USER CODE END Boot_Mode_Sequence_0 */
 
   /* Enable I-Cache---------------------------------------------------------*/
-  SCB_EnableICache();
+  //SCB_EnableICache();
 
   /* Enable D-Cache---------------------------------------------------------*/
-  SCB_EnableDCache();
+  //SCB_EnableDCache();
 
 /* USER CODE BEGIN Boot_Mode_Sequence_1 */
 	/* Wait until CPU2 boots and enters in stop mode or timeout*/
@@ -265,10 +274,10 @@ HSEM notification */
   MX_DAC1_Init();
   MX_USART3_UART_Init();
   MX_TIM6_Init();
-  MX_USB_DEVICE_Init();
   MX_I2C1_Init();
   MX_I2S2_Init();
   MX_TIM2_Init();
+  MX_USB_DEVICE_Init();
   /* USER CODE BEGIN 2 */
 #ifdef ENABLE_LOGGING
   logger_init(&htim2);
@@ -308,25 +317,29 @@ HSEM notification */
   console_register_command("lschain\0", lschain);
   console_register_command("setparam\0", setparam);
 
-  drvman_register_driver(&mcu_internal_driver);
+  //drvman_register_driver(&mcu_internal_driver);
+  drvman_set_usb_driver(&usb_driver);
+
   drvman_register_driver(&cs4272_driver);
-  drvman_set_audio_driver(2);
+  drvman_set_audio_driver(1);
 
-  drvman_register_driver(&usb_driver);
-  drvman_set_usb_driver(3);
+  //drvman_register_driver(&usb_driver);
 
-  audio_engine_init();
+
+  //audio_engine_init();
 
   console_exec("");
-  console_exec_script(script_eq);
+  //console_exec_script(script_eq);
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
+  uint32_t t = 0;
+  uint8_t test[3] = {5, 5, 5};
+
 	while (1)
 	{
 		console_iteration();
-
 		if (temp_next_block_ready)
 		{
 			process_block();
@@ -744,7 +757,7 @@ void MPU_Config(void)
   MPU_InitStruct.AccessPermission = MPU_REGION_FULL_ACCESS;
   MPU_InitStruct.DisableExec = MPU_INSTRUCTION_ACCESS_ENABLE;
   MPU_InitStruct.IsShareable = MPU_ACCESS_NOT_SHAREABLE;
-  MPU_InitStruct.IsCacheable = MPU_ACCESS_NOT_CACHEABLE;
+  MPU_InitStruct.IsCacheable = MPU_ACCESS_CACHEABLE;
   MPU_InitStruct.IsBufferable = MPU_ACCESS_NOT_BUFFERABLE;
 
   HAL_MPU_ConfigRegion(&MPU_InitStruct);

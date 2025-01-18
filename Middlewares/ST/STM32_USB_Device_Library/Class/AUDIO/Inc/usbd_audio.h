@@ -61,9 +61,7 @@ extern "C" {
 #define AUDIO_OUT_EP                                  0x01U
 #endif /* AUDIO_OUT_EP */
 
-#define AUDIO_IN_EP                                  0x81U
-
-#define USB_AUDIO_CONFIG_DESC_SIZ                     118U
+#define USB_AUDIO_CONFIG_DESC_SIZ                     0xBFU
 #define AUDIO_INTERFACE_DESC_SIZE                     0x09U
 #define USB_AUDIO_DESC_SIZ                            0x09U
 #define AUDIO_STANDARD_ENDPOINT_DESC_SIZE             0x09U

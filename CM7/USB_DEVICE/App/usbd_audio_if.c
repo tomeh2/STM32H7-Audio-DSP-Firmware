@@ -1,30 +1,28 @@
 /* USER CODE BEGIN Header */
 /**
- ******************************************************************************
- * @file           : usbd_audio_if.c
- * @version        : v1.0_Cube
- * @brief          : Generic media access layer.
- ******************************************************************************
- * @attention
- *
- * Copyright (c) 2024 STMicroelectronics.
- * All rights reserved.
- *
- * This software is licensed under terms that can be found in the LICENSE file
- * in the root directory of this software component.
- * If no LICENSE file comes with this software, it is provided AS-IS.
- *
- ******************************************************************************
- */
+  ******************************************************************************
+  * @file           : usbd_audio_if.c
+  * @version        : v1.0_Cube
+  * @brief          : Generic media access layer.
+  ******************************************************************************
+  * @attention
+  *
+  * Copyright (c) 2024 STMicroelectronics.
+  * All rights reserved.
+  *
+  * This software is licensed under terms that can be found in the LICENSE file
+  * in the root directory of this software component.
+  * If no LICENSE file comes with this software, it is provided AS-IS.
+  *
+  ******************************************************************************
+  */
  /* USER CODE END Header */
 
 /* Includes ------------------------------------------------------------------*/
 #include "usbd_audio_if.h"
 
 /* USER CODE BEGIN INCLUDE */
-#include "audio_defs.h"
-#include "driver_manager.h"
-#include "logger.h"
+#include "interface.h"
 /* USER CODE END INCLUDE */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -155,10 +153,10 @@ USBD_AUDIO_ItfTypeDef USBD_AUDIO_fops_FS =
 static int8_t AUDIO_Init_FS(uint32_t AudioFreq, uint32_t Volume, uint32_t options)
 {
   /* USER CODE BEGIN 0 */
-	UNUSED(AudioFreq);
-	UNUSED(Volume);
-	UNUSED(options);
-	return (USBD_OK);
+  UNUSED(AudioFreq);
+  UNUSED(Volume);
+  UNUSED(options);
+  return (USBD_OK);
   /* USER CODE END 0 */
 }
 
@@ -170,8 +168,8 @@ static int8_t AUDIO_Init_FS(uint32_t AudioFreq, uint32_t Volume, uint32_t option
 static int8_t AUDIO_DeInit_FS(uint32_t options)
 {
   /* USER CODE BEGIN 1 */
-	UNUSED(options);
-	return (USBD_OK);
+  UNUSED(options);
+  return (USBD_OK);
   /* USER CODE END 1 */
 }
 
@@ -185,18 +183,18 @@ static int8_t AUDIO_DeInit_FS(uint32_t options)
 static int8_t AUDIO_AudioCmd_FS(uint8_t* pbuf, uint32_t size, uint8_t cmd)
 {
   /* USER CODE BEGIN 2 */
-	switch(cmd)
-	{
-	case AUDIO_CMD_START:
-		break;
+  switch(cmd)
+  {
+    case AUDIO_CMD_START:
+    break;
 
-	case AUDIO_CMD_PLAY:
-		break;
-	}
-	UNUSED(pbuf);
-	UNUSED(size);
-	UNUSED(cmd);
-	return (USBD_OK);
+    case AUDIO_CMD_PLAY:
+    break;
+  }
+  UNUSED(pbuf);
+  UNUSED(size);
+  UNUSED(cmd);
+  return (USBD_OK);
   /* USER CODE END 2 */
 }
 
@@ -208,8 +206,8 @@ static int8_t AUDIO_AudioCmd_FS(uint8_t* pbuf, uint32_t size, uint8_t cmd)
 static int8_t AUDIO_VolumeCtl_FS(uint8_t vol)
 {
   /* USER CODE BEGIN 3 */
-	UNUSED(vol);
-	return (USBD_OK);
+  UNUSED(vol);
+  return (USBD_OK);
   /* USER CODE END 3 */
 }
 
@@ -221,8 +219,8 @@ static int8_t AUDIO_VolumeCtl_FS(uint8_t vol)
 static int8_t AUDIO_MuteCtl_FS(uint8_t cmd)
 {
   /* USER CODE BEGIN 4 */
-	UNUSED(cmd);
-	return (USBD_OK);
+  UNUSED(cmd);
+  return (USBD_OK);
   /* USER CODE END 4 */
 }
 
@@ -234,14 +232,11 @@ static int8_t AUDIO_MuteCtl_FS(uint8_t cmd)
 static int8_t AUDIO_PeriodicTC_FS(uint8_t *pbuf, uint32_t size, uint8_t cmd)
 {
   /* USER CODE BEGIN 5 */
-	//UNUSED(pbuf);
-	//UNUSED(size);
-	//UNUSED(cmd);
-	LOG_TIME_START(LOG_TIME_USB_WR);
-	if (usb_device)
-		usb_device->io_ops->write(usb_device, pbuf, size);
-	LOG_TIME_STOP(LOG_TIME_USB_WR);
-	return (USBD_OK);
+  //UNUSED(pbuf);
+  //UNUSED(size);
+  //UNUSED(cmd);
+	//usb_device->io_ops->write(usb_device, pbuf, size);
+  return (USBD_OK);
   /* USER CODE END 5 */
 }
 
@@ -252,7 +247,7 @@ static int8_t AUDIO_PeriodicTC_FS(uint8_t *pbuf, uint32_t size, uint8_t cmd)
 static int8_t AUDIO_GetState_FS(void)
 {
   /* USER CODE BEGIN 6 */
-	return (USBD_OK);
+  return (USBD_OK);
   /* USER CODE END 6 */
 }
 
@@ -263,7 +258,7 @@ static int8_t AUDIO_GetState_FS(void)
 void TransferComplete_CallBack_FS(void)
 {
   /* USER CODE BEGIN 7 */
-	USBD_AUDIO_Sync(&hUsbDeviceFS, AUDIO_OFFSET_FULL);
+  USBD_AUDIO_Sync(&hUsbDeviceFS, AUDIO_OFFSET_FULL);
   /* USER CODE END 7 */
 }
 
@@ -274,7 +269,7 @@ void TransferComplete_CallBack_FS(void)
 void HalfTransfer_CallBack_FS(void)
 {
   /* USER CODE BEGIN 8 */
-	USBD_AUDIO_Sync(&hUsbDeviceFS, AUDIO_OFFSET_HALF);
+  USBD_AUDIO_Sync(&hUsbDeviceFS, AUDIO_OFFSET_HALF);
   /* USER CODE END 8 */
 }
 

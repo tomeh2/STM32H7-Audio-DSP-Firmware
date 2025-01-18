@@ -37,6 +37,7 @@ int8_t audio_engine_insblk(uint8_t stream_id, struct Block* block)
 
 int8_t audio_engine_rmblk(uint8_t stream_id, uint32_t index)
 {
+
 	if (stream_id >= NUM_AUDIO_STREAMS)
 		return -EOOB;
 

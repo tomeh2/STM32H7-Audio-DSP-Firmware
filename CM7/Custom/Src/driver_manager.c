@@ -18,7 +18,7 @@ struct Interface** driver_list = drivers;
 
 struct Interface* audio_device = NULL;
 struct Interface* serial_device = NULL;
-struct Interface* usb_device = NULL;
+struct HostInterface* usb_device = NULL;
 
 void drvman_init()
 {
@@ -92,22 +92,16 @@ void drvman_set_audio_driver(uint8_t driver_id)
 	console_printf("%s Set audio driver: %s\n\r", module_str, drivers[driver_id]->name);
 }
 
-void drvman_set_usb_driver(uint8_t driver_id)
+void drvman_set_usb_driver(struct HostInterface* driver)
 {
-	if (driver_id >= MAX_DRIVERS)
-	{
-		console_printf("%s USB ID out of range\n\r", module_str);
-		return;
-	}
-
-	if (!drivers[driver_id])
+	if (!driver)
 	{
 		console_printf("%s Target USB driver is NULL\n\r", module_str);
 		return;
 	}
 
-	usb_device = drivers[driver_id];
+	usb_device = driver;
 	usb_device->io_ops->start(usb_device);
 
-	console_printf("%s Set USB driver: %s\n\r", module_str, drivers[driver_id]->name);
+	console_printf("%s Set USB driver: %s\n\r", module_str, driver->name);
 }

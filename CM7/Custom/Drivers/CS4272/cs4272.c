@@ -13,10 +13,10 @@
 #define MAX_CHANNELS 2
 #define RXTX_BUFFER_SIZE (SAMPLES_PER_BLOCK * MAX_CHANNELS * 2)
 
-static int32_t tx_buf[RXTX_BUFFER_SIZE] __attribute__((section(".i2s_tx")));
-static int32_t rx_buf[RXTX_BUFFER_SIZE] __attribute__((section(".i2s_rx")));;
-static int32_t* inactive_tx_buf = tx_buf;
-static int32_t* inactive_rx_buf = rx_buf;
+static volatile int32_t tx_buf[RXTX_BUFFER_SIZE] __attribute__((section(".i2s_tx")));
+static volatile int32_t rx_buf[RXTX_BUFFER_SIZE] __attribute__((section(".i2s_rx")));;
+static volatile int32_t* inactive_tx_buf = tx_buf;
+static volatile int32_t* inactive_rx_buf = rx_buf;
 
 static uint8_t is_running = 0;
 
@@ -42,6 +42,10 @@ int8_t cs4272_start(struct Interface* intf)
 	if (!intf->private_data)
 		return -EINVAL;
 
+	HAL_GPIO_WritePin(GPIOE, GPIO_PIN_0, GPIO_PIN_RESET);
+	HAL_Delay(100);
+	HAL_GPIO_WritePin(GPIOE, GPIO_PIN_0, GPIO_PIN_SET);
+
 	struct CS4272_PrivateData* pd = intf->private_data;
 
 	if (!pd->i2c_hndl || !pd->i2s_hndl)
@@ -54,38 +58,38 @@ int8_t cs4272_start(struct Interface* intf)
 	HAL_I2S_RegisterCallback(pd->i2s_hndl, HAL_I2S_TX_RX_COMPLETE_CB_ID, cs4272_dma_cmpl_callback);
 
 	HAL_I2SEx_TransmitReceive_DMA(pd->i2s_hndl, tx_buf, rx_buf, RXTX_BUFFER_SIZE);
-	HAL_GPIO_WritePin(GPIOE, GPIO_PIN_0, GPIO_PIN_SET);
 
 	uint16_t addr = 0x0022;
 	uint8_t wr_data[2];
 	// Configure CODEC
+	HAL_StatusTypeDef status;
 	wr_data[0] = 0x07;
 	wr_data[1] = 0x02;
-	HAL_I2C_Master_Transmit(pd->i2c_hndl, addr, wr_data, 2, 10000);
+	status = HAL_I2C_Master_Transmit(pd->i2c_hndl, addr, wr_data, 2, 100);
 
 	wr_data[0] = 0x01;
 	wr_data[1] = 0x01;
-	HAL_I2C_Master_Transmit(pd->i2c_hndl, addr, wr_data, 2, 10000);
+	status = HAL_I2C_Master_Transmit(pd->i2c_hndl, addr, wr_data, 2, 100);
 
 	wr_data[0] = 0x02;
 	wr_data[1] = 0x00;
-	HAL_I2C_Master_Transmit(pd->i2c_hndl, addr, wr_data, 2, 10000);
+	status = HAL_I2C_Master_Transmit(pd->i2c_hndl, addr, wr_data, 2, 100);
 
 	wr_data[0] = 0x03;
 	wr_data[1] = 0x29;
-	HAL_I2C_Master_Transmit(pd->i2c_hndl, addr, wr_data, 2, 10000);
+	status = HAL_I2C_Master_Transmit(pd->i2c_hndl, addr, wr_data, 2, 100);
 
 	wr_data[0] = 0x04;
 	wr_data[1] = 0x00;
-	HAL_I2C_Master_Transmit(pd->i2c_hndl, addr, wr_data, 2, 10000);
+	status = HAL_I2C_Master_Transmit(pd->i2c_hndl, addr, wr_data, 2, 100);
 
 	wr_data[0] = 0x05;
 	wr_data[1] = 0x00;
-	HAL_I2C_Master_Transmit(pd->i2c_hndl, addr, wr_data, 2, 10000);
+	status = HAL_I2C_Master_Transmit(pd->i2c_hndl, addr, wr_data, 2, 100);
 
 	wr_data[0] = 0x06;
 	wr_data[1] = 0x00;
-	HAL_I2C_Master_Transmit(pd->i2c_hndl, addr, wr_data, 2, 10000);
+	status = HAL_I2C_Master_Transmit(pd->i2c_hndl, addr, wr_data, 2, 100);
 
 	is_running = 1;
 

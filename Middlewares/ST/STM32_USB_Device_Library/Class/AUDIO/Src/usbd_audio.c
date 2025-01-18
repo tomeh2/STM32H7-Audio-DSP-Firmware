@@ -62,6 +62,7 @@ EndBSPDependencies */
 /* Includes ------------------------------------------------------------------*/
 #include "usbd_audio.h"
 #include "usbd_ctlreq.h"
+#include "driver_manager.h"
 
 
 /** @addtogroup STM32_USB_DEVICE_LIBRARY
@@ -173,11 +174,11 @@ __ALIGN_BEGIN static uint8_t USBD_AUDIO_CfgDesc[USB_AUDIO_CONFIG_DESC_SIZ] __ALI
   USB_DESC_TYPE_CONFIGURATION,          /* bDescriptorType */
   LOBYTE(USB_AUDIO_CONFIG_DESC_SIZ),    /* wTotalLength */
   HIBYTE(USB_AUDIO_CONFIG_DESC_SIZ),
-  0x02,                                 /* bNumInterfaces */
+  0x03,                                 /* bNumInterfaces */
   0x01,                                 /* bConfigurationValue */
   0x00,                                 /* iConfiguration */
 #if (USBD_SELF_POWERED == 1U)
-  0xC0,                                 /* bmAttributes: Bus Powered according to user configuration */
+  0xC0,                                /* bmAttributes: Bus Powered according to user configuration */
 #else
   0x80,                                 /* bmAttributes: Bus Powered according to user configuration */
 #endif /* USBD_SELF_POWERED */
@@ -197,16 +198,17 @@ __ALIGN_BEGIN static uint8_t USBD_AUDIO_CfgDesc[USB_AUDIO_CONFIG_DESC_SIZ] __ALI
   /* 09 byte*/
 
   /* USB Speaker Class-specific AC Interface Descriptor */
-  AUDIO_INTERFACE_DESC_SIZE,            /* bLength */
+  AUDIO_INTERFACE_DESC_SIZE + 1,            /* bLength */
   AUDIO_INTERFACE_DESCRIPTOR_TYPE,      /* bDescriptorType */
   AUDIO_CONTROL_HEADER,                 /* bDescriptorSubtype */
   0x00,          /* 1.00 */             /* bcdADC */
   0x01,
-  0x27,                                 /* wTotalLength */
+  0x45,                                 /* wTotalLength */
   0x00,
-  0x01,                                 /* bInCollection */
+  0x02,                                 /* bInCollection */
   0x01,                                 /* baInterfaceNr */
-  /* 09 byte*/
+  0x02,
+  /* 10 byte*/
 
   /* USB Speaker Input Terminal Descriptor */
   AUDIO_INPUT_TERMINAL_DESC_SIZE,       /* bLength */
@@ -246,6 +248,38 @@ __ALIGN_BEGIN static uint8_t USBD_AUDIO_CfgDesc[USB_AUDIO_CONFIG_DESC_SIZ] __ALI
   0x02,                                 /* bSourceID */
   0x00,                                 /* iTerminal */
   /* 09 byte */
+
+  //ACID INPUT TERMINAL
+  		0x0C,				//bLength
+  		0x24,				//bDescriptorType
+  		0x02,				//bDescriptorSubtype
+  		0x04,				//bTerminalID
+  		0x01, 0x02,			//wTerminalType
+  		0x00,				//bAssocTerminal
+  		0x01,				//bNrChannels
+  		0x00, 0x00,			//wChannelConfig
+  		0x00,				//iChannelNames
+  		0x00,				//iTerminal
+
+  		//ACID FEATURE UNIT (MUTE)
+  		0x08,				//bLength
+  		0x24,				//bDescriptorType
+  		0x06,				//bDescriptorSubtype
+  		0x05,				//bUnitID
+  		0x04,				//bSourceID
+  		0x01,				//bControlSize
+  		0x01,				//bmaControls(0)
+  		0x00,				//iFeature
+
+  		//ACID OUTPUT TERMINAL
+  		0x09,				//bLength
+  		0x24,				//bDescriptorType
+  		0x03,				//bDescriptorSubtype
+  		0x06,				//bTerminalID
+  		0x01, 0x01,			//wTerminalType
+  		0x00,				//bAssocTerminal
+  		0x05,				//bSourceID
+  		0x00,				//iTerminal
 
   /* USB Speaker Standard AS Interface Descriptor - Audio Streaming Zero Bandwidth */
   /* Interface 1, Alternate Setting 0                                              */
@@ -303,18 +337,8 @@ __ALIGN_BEGIN static uint8_t USBD_AUDIO_CfgDesc[USB_AUDIO_CONFIG_DESC_SIZ] __ALI
   AUDIO_PACKET_SZE(USBD_AUDIO_FREQ),    /* wMaxPacketSize in Bytes (Freq(Samples)*2(Stereo)*2(HalfWord)) */
   AUDIO_FS_BINTERVAL,                   /* bInterval */
   0x00,                                 /* bRefresh */
-  AUDIO_IN_EP,                          /* bSynchAddress */
-  /* 09 byte*/
-
-  /* Endpoint 2 - Standard Descriptor Feedback */
-  AUDIO_STANDARD_ENDPOINT_DESC_SIZE,    /* bLength */
-  USB_DESC_TYPE_ENDPOINT,               /* bDescriptorType */
-  AUDIO_IN_EP,                         /* bEndpointAddress 1 out endpoint */
-  USBD_EP_TYPE_ISOC,                    /* bmAttributes */
-  AUDIO_PACKET_SZE(3),    /* wMaxPacketSize in Bytes*/
-  AUDIO_FS_BINTERVAL,                   /* bInterval */
-  0x00,                                 /* bRefresh */
   0x00,                                 /* bSynchAddress */
+  /* 09 byte*/
 
   /* Endpoint - Audio Streaming Descriptor */
   AUDIO_STREAMING_ENDPOINT_DESC_SIZE,   /* bLength */
@@ -325,6 +349,66 @@ __ALIGN_BEGIN static uint8_t USBD_AUDIO_CfgDesc[USB_AUDIO_CONFIG_DESC_SIZ] __ALI
   0x00,                                 /* wLockDelay */
   0x00,
   /* 07 byte*/
+
+	//INTERFACE DESCRIPTOR (ZERO BW)
+	0x09,				//bLength
+	0x04,				//bDescriptorType
+	0x02,				//bInterfaceNumber
+	0x00,				//bAlternateSetting
+	0x00,				//bNumEndpoints
+	0x01,				//bInterfaceClass
+	0x02,				//bInterfaceSubclass
+	0x00,				//bInterfaceProtocol
+	0x00,				//iInterface
+
+	//INTERFACE DESCRIPTOR (ZERO BW)
+	0x09,				//bLength
+	0x04,				//bDescriptorType
+	0x02,				//bInterfaceNumber
+	0x01,				//bAlternateSetting
+	0x01,				//bNumEndpoints
+	0x01,				//bInterfaceClass
+	0x02,				//bInterfaceSubclass
+	0x00,				//bInterfaceProtocol
+	0x00,				//iInterface
+
+	//AS GENERAL DESCRIPTOR
+	0x07,				//bLength
+	0x24,				//bDescriptorType
+	0x01,				//bDescriptorSubtype
+	0x06,				//bTerminalLink
+	0x00,				//bDelay
+	0x01, 0x00,			//wFormatTag
+
+	  /* USB Speaker Audio Type III Format Interface Descriptor */
+	  0x0B,                                 /* bLength */
+	  AUDIO_INTERFACE_DESCRIPTOR_TYPE,      /* bDescriptorType */
+	  AUDIO_STREAMING_FORMAT_TYPE,          /* bDescriptorSubtype */
+	  AUDIO_FORMAT_TYPE_I,                  /* bFormatType */
+	  0x01,                                 /* bNrChannels */
+	  0x02,                                 /* bSubFrameSize :  2 Bytes per frame (16bits) */
+	  16,                                   /* bBitResolution (16-bits per sample) */
+	  0x01,                                 /* bSamFreqType only one frequency supported */
+	  AUDIO_SAMPLE_FREQ(USBD_AUDIO_FREQ),   /* Audio sampling frequency coded on 3 bytes */
+	  /* 11 byte*/
+
+	//ENDPOINT DESCRIPTOR
+	0x09,				//bLength
+	0x05,				//bDescriptorType
+	0x81,				//bEndpointAddress
+	0x01,				//bmAttributes
+	0x60, 0x00,			//wMaxPacketSize
+	AUDIO_FS_BINTERVAL,	//bInterval
+	0x00,				//bRefresh
+	0x00,				//bSynchAddress
+
+	//AS ENDPOINT DESCRIPTOR
+	0x07,				//bLength
+	0x25,				//bDescriptorType
+	0x01,				//bDescriptorSubtype
+	0x00,				//bmAttributes
+	0x00,				//bLockDelayUnits
+	0x00, 0x00			//wLockDelay
 } ;
 
 /* USB Standard Device Descriptor */
@@ -344,6 +428,7 @@ __ALIGN_BEGIN static uint8_t USBD_AUDIO_DeviceQualifierDesc[USB_LEN_DEV_QUALIFIE
 #endif /* USE_USBD_COMPOSITE  */
 
 static uint8_t AUDIOOutEpAdd = AUDIO_OUT_EP;
+static uint8_t AUDIOInEpAdd = 0x81;
 /**
   * @}
   */
@@ -359,6 +444,7 @@ static uint8_t AUDIOOutEpAdd = AUDIO_OUT_EP;
   * @param  cfgidx: Configuration index
   * @retval status
   */
+
 static uint8_t USBD_AUDIO_Init(USBD_HandleTypeDef *pdev, uint8_t cfgidx)
 {
   UNUSED(cfgidx);
@@ -387,18 +473,17 @@ static uint8_t USBD_AUDIO_Init(USBD_HandleTypeDef *pdev, uint8_t cfgidx)
   }
   else   /* LOW and FULL-speed endpoints */
   {
-    pdev->ep_out[AUDIOOutEpAdd & 0xFU].bInterval = AUDIO_FS_BINTERVAL;
+	  pdev->ep_out[AUDIOOutEpAdd & 0xFU].bInterval = AUDIO_FS_BINTERVAL;
+	  //pdev->ep_in[AUDIOInEpAdd & 0xFU].bInterval = AUDIO_FS_BINTERVAL;
   }
-
   /* Open EP OUT */
   (void)USBD_LL_OpenEP(pdev, AUDIOOutEpAdd, USBD_EP_TYPE_ISOC, AUDIO_OUT_PACKET);
   pdev->ep_out[AUDIOOutEpAdd & 0xFU].is_used = 1U;
+  (void)USBD_LL_OpenEP(pdev, AUDIOInEpAdd, USBD_EP_TYPE_ISOC, 96);
+  pdev->ep_in[AUDIOInEpAdd & 0xFU].is_used = 1U;
 
-  pdev->ep_in[AUDIO_IN_EP & 0xFU].bInterval = AUDIO_FS_BINTERVAL;
-  pdev->ep_in[AUDIO_IN_EP & 0xFU].maxpacket = 3;
-  (void)USBD_LL_OpenEP(pdev, AUDIO_IN_EP, USBD_EP_TYPE_ISOC, 3U);
-  pdev->ep_in[AUDIO_IN_EP & 0xFU].is_used = 1U;
 
+	//USBD_LL_Transmit(pdev, 0x81, NULL, 0);
   haudio->alt_setting = 0U;
   haudio->offset = AUDIO_OFFSET_UNKNOWN;
   haudio->wr_ptr = 0U;
@@ -417,6 +502,8 @@ static uint8_t USBD_AUDIO_Init(USBD_HandleTypeDef *pdev, uint8_t cfgidx)
   (void)USBD_LL_PrepareReceive(pdev, AUDIOOutEpAdd, haudio->buffer,
                                AUDIO_OUT_PACKET);
 
+  //USBD_LL_FlushEP(pdev, 0x81);
+  //USBD_LL_Transmit(pdev, 0x81, test, 96);
   return (uint8_t)USBD_OK;
 }
 
@@ -600,12 +687,17 @@ static uint8_t *USBD_AUDIO_GetCfgDesc(uint16_t *length)
   * @param  epnum: endpoint index
   * @retval status
   */
+
+static uint8_t test[1024];
 static uint8_t USBD_AUDIO_DataIn(USBD_HandleTypeDef *pdev, uint8_t epnum)
 {
-  UNUSED(pdev);
-  UNUSED(epnum);
+	usb_device->io_ops->host_data_read(usb_device, test, 96);
 
-  /* Only OUT data are processed */
+	USBD_LL_FlushEP(pdev, 0x81);
+	USBD_StatusTypeDef t1 = USBD_LL_Transmit(pdev, 0x81, test, 96);
+	//((USBD_CDC_ItfTypeDef *)pdev->pUserData[pdev->classId])->TransmitCplt(hcdc->TxBuffer, &hcdc->TxLength, epnum);
+	//((USBD_Audio_ItfTypeDef)pdev->pUserData[pdev->classId])
+
   return (uint8_t)USBD_OK;
 }
 
@@ -658,10 +750,10 @@ static uint8_t USBD_AUDIO_EP0_TxReady(USBD_HandleTypeDef *pdev)
   * @param  pdev: device instance
   * @retval status
   */
+
 static uint8_t USBD_AUDIO_SOF(USBD_HandleTypeDef *pdev)
 {
-  UNUSED(pdev);
-
+	USBD_LL_Transmit(pdev, 0x81, NULL, 0);
   return (uint8_t)USBD_OK;
 }
 
@@ -803,8 +895,9 @@ static uint8_t USBD_AUDIO_DataOut(USBD_HandleTypeDef *pdev, uint8_t epnum)
     PacketSize = (uint16_t)USBD_LL_GetRxDataSize(pdev, epnum);
 
     /* Packet received Callback */
-    ((USBD_AUDIO_ItfTypeDef *)pdev->pUserData[pdev->classId])->PeriodicTC(&haudio->buffer[haudio->wr_ptr],
-                                                                          PacketSize, AUDIO_OUT_TC);
+    //((USBD_AUDIO_ItfTypeDef *)pdev->pUserData[pdev->classId])->PeriodicTC(&haudio->buffer[haudio->wr_ptr],
+    //                                                                      PacketSize, AUDIO_OUT_TC);
+    usb_device->io_ops->host_data_write(usb_device, &haudio->buffer[haudio->wr_ptr], PacketSize);
 
     /* Increment the Buffer pointer or roll it back when all buffers are full */
     haudio->wr_ptr += PacketSize;
