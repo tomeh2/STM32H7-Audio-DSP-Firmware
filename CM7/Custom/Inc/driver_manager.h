@@ -9,21 +9,16 @@
 #define INC_DRIVER_MANAGER_H_
 
 #include "host_driver.h"
-#include "interface.h"
+#include "audio_driver.h"
+#include "terminal_driver.h"
 
-#define MAX_DRIVERS 8
-
-extern size_t registered_drivers;
-extern struct Interface** driver_list;
-
-extern struct Interface* audio_device;
-extern struct Interface* serial_device;
-extern struct HostInterface* usb_device;
+extern struct AudioDriver* audio_device;
+extern struct TerminalDriver* serial_device;
+extern struct HostDriver* host_device;
 
 extern void drvman_init();
-extern void drvman_register_driver(struct Interface* driver);
-extern void drvman_set_serial_driver(uint8_t driver_id);
-extern void drvman_set_audio_driver(uint8_t driver_id);
-extern void drvman_set_usb_driver(struct HostInterface* driver);
+extern void drvman_set_terminal_driver(struct TerminalDriver* driver);
+extern void drvman_set_audio_driver(struct AudioDriver* driver);
+extern void drvman_set_host_driver(struct HostDriver* driver);
 
 #endif /* INC_DRIVER_MANAGER_H_ */

@@ -688,10 +688,10 @@ static uint8_t *USBD_AUDIO_GetCfgDesc(uint16_t *length)
   * @retval status
   */
 
-static uint8_t test[1024];
+static uint8_t test[96];
 static uint8_t USBD_AUDIO_DataIn(USBD_HandleTypeDef *pdev, uint8_t epnum)
 {
-	usb_device->io_ops->host_data_read(usb_device, test, 96);
+	host_device->io_ops->host_data_read(host_device, test, 96);
 
 	USBD_LL_FlushEP(pdev, 0x81);
 	USBD_StatusTypeDef t1 = USBD_LL_Transmit(pdev, 0x81, test, 96);
@@ -897,7 +897,7 @@ static uint8_t USBD_AUDIO_DataOut(USBD_HandleTypeDef *pdev, uint8_t epnum)
     /* Packet received Callback */
     //((USBD_AUDIO_ItfTypeDef *)pdev->pUserData[pdev->classId])->PeriodicTC(&haudio->buffer[haudio->wr_ptr],
     //                                                                      PacketSize, AUDIO_OUT_TC);
-    usb_device->io_ops->host_data_write(usb_device, &haudio->buffer[haudio->wr_ptr], PacketSize);
+    host_device->io_ops->host_data_write(host_device, &haudio->buffer[haudio->wr_ptr], PacketSize);
 
     /* Increment the Buffer pointer or roll it back when all buffers are full */
     haudio->wr_ptr += PacketSize;

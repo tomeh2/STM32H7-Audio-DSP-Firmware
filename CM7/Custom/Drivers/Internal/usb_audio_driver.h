@@ -16,6 +16,6 @@ struct USBAudioClassDriverPrivate
 
 };
 
-extern struct HostInterfaceOps usb_audio_class_driver;
+extern struct HostDriverOps usb_audio_class_driver;
 
 #endif /* INC_USB_DRIVER_H_ */

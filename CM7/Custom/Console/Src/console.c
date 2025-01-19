@@ -6,13 +6,13 @@
  */
 
 #include "stm32h7xx_hal.h"
-#include "interface.h"
 #include "console.h"
 #include "driver_manager.h"
+#include "logger.h"
 
 #include <string.h>
 #include <stdlib.h>
-#include <stdarg.h>
+#include <stdio.h>
 
 #define CONSOLE_MAX_COMMANDS 32
 #define CONSOLE_BUFFER_SIZE 128
@@ -49,6 +49,8 @@ void console_init()
 	registered_commands = 0;
 	command_list_head = NULL;
 	console_initialized = 1;
+
+	logger_printf(DEBUG_LEVEL_INFO, "%s Initialization finished\n\r", module_str);
 }
 
 static void console_print(char* str)
@@ -73,12 +75,21 @@ static void console_println(char* str)
 void console_printf(const char* fmt, ...)
 {
 	if (!console_initialized)
-			return;
+		return;
 
 	va_list args;
 	va_start(args, fmt);
 	vsnprintf(output_line_buffer, CONSOLE_BUFFER_SIZE, fmt, args);
 	va_end(args);
+	console_print(output_line_buffer);
+}
+
+void console_vsprintf(const char* fmt, va_list args)
+{
+	if (!console_initialized)
+		return;
+
+	vsnprintf(output_line_buffer, CONSOLE_BUFFER_SIZE, fmt, args);
 	console_print(output_line_buffer);
 }
 
@@ -102,8 +113,7 @@ void console_register_command(char* name, void (*func)())
 		while (curr->next) curr = curr->next;
 		curr->next = new_command;
 	}
-	sprintf(print_buf, "%s Registered command: %s", module_str, name);
-	console_println(print_buf);
+	logger_printf(DEBUG_LEVEL_INFO, "%s Registered command: %s\n\r", module_str, name);
 }
 
 void console_parse()

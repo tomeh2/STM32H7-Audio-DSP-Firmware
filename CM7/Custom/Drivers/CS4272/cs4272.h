@@ -8,7 +8,7 @@
 #ifndef DRIVERS_CS4272_CS4272_H_
 #define DRIVERS_CS4272_CS4272_H_
 
-#include "interface.h"
+#include "audio_driver.h"
 #include "stm32h7xx_hal.h"
 
 struct CS4272_PrivateData
@@ -17,6 +17,6 @@ struct CS4272_PrivateData
 	I2S_HandleTypeDef* i2s_hndl;
 };
 
-extern struct InterfaceOperations cs4272_ops;
+extern struct AudioDriverOps cs4272_ops;
 
 #endif /* DRIVERS_CS4272_CS4272_H_ */

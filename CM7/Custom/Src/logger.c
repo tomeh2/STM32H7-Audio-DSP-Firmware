@@ -8,6 +8,8 @@
 #include "logger.h"
 #include "stm32h7xx_hal.h"
 #include "audio_defs.h"
+#include "console.h"
+#include <stdarg.h>
 
 struct LogEvent events[NUM_EVENTCNTRS];
 struct LogEvent* event_list = events;
@@ -16,6 +18,14 @@ struct LogTimer timers[NUM_TIMERS];
 struct LogTimer* timer_list = timers;
 
 TIM_HandleTypeDef* tim_hndl = NULL;
+
+char* DEBUG_LEVEL_STRINGS[5] = {
+		"[INFO]",
+		"[WARNING]",
+		"[ERROR]",
+		"[CRITICAL]",
+		"[UNKNOWN]"
+};
 
 int8_t logger_init(TIM_HandleTypeDef* htim)
 {
@@ -136,4 +146,18 @@ int8_t logger_event_increment(uint8_t event_id)
 	events[event_id].evnt_count++;
 
 	return EOK;
+}
+
+void logger_printf(uint8_t level, char* fmt, ...)
+{
+	if (level >= DEBUG_LEVELS)
+		level = 4;
+
+	char temp[256];
+	snprintf(temp, 256, "%s %s", DEBUG_LEVEL_STRINGS[level], fmt);
+
+	va_list argptr;
+	va_start(argptr, fmt);
+	console_vsprintf(temp, argptr);
+	va_end(argptr);
 }

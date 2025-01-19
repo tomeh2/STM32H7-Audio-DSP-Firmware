@@ -23,7 +23,6 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "audio_defs.h"
-#include "interface.h"
 #include "internal_peripheral_driver.h"
 #include "cs4272.h"
 #include "encoder.h"
@@ -91,14 +90,14 @@ UART_HandleTypeDef huart3;
 
 /* USER CODE BEGIN PV */
 
-struct Interface mcu_internal_driver =
+struct AudioDriver mcu_internal_driver =
 {
 		.io_ops = &int_per_drv_ops,
 		.name = "MCU Internal Hardware Driver",
 		.private_data = &hdac1
 };
 
-struct Interface uart_driver =
+struct TerminalDriver uart_driver =
 {
 		.io_ops = &uart_drv_ops,
 		.name = "UART Driver",
@@ -111,14 +110,14 @@ struct CS4272_PrivateData cs4272_pd =
 		.i2c_hndl = &hi2c1
 };
 
-struct Interface cs4272_driver =
+struct AudioDriver cs4272_driver =
 {
 		.io_ops = &cs4272_ops,
 		.name = "Cirrus Logic CS4272 CODEC Driver",
 		.private_data = &cs4272_pd
 };
 
-struct HostInterface usb_driver =
+struct HostDriver usb_driver =
 {
 		.io_ops = &usb_audio_class_driver,
 		.name = "USB Audio Class Driver",
@@ -185,7 +184,7 @@ inline static void process_block()
 	LOG_TIME_START(LOG_TIME_PRBLOCK_ID);
 
 	LOG_TIME_START(LOG_TIME_USB_RD);
-	usb_device->io_ops->dev_data_read(usb_device, processing_buffers, SAMPLES_PER_BLOCK * 2);
+	host_device->io_ops->dev_data_read(host_device, processing_buffers, SAMPLES_PER_BLOCK * 2);
 	LOG_TIME_STOP(LOG_TIME_USB_RD);
 
 	audio_engine_process(processing_buffers, processing_buffers2, SAMPLES_PER_BLOCK);
@@ -201,7 +200,7 @@ inline static void process_block()
 		if (t >= 2.f * 3.1415f)
 			t -= 2.f * 3.1415f;
 	}
-	usb_device->io_ops->dev_data_write(usb_device, test, 128);
+	host_device->io_ops->dev_data_write(host_device, test, 128);
 
 	LOG_TIME_STOP(LOG_TIME_PRBLOCK_ID);
 }
@@ -288,14 +287,12 @@ HSEM notification */
   logger_timer_set_name(LOG_AUDENG_PROCESS_1, "audio_stream_1_process");
   logger_timer_set_name(LOG_AUDENG_PROCESS_2, "audio_stream_2_process");
 #endif
-  HAL_Delay(100);
   drvman_init();
-  drvman_register_driver(&uart_driver);
-  drvman_set_serial_driver(0);
+  drvman_set_terminal_driver(&uart_driver);
   console_init();
 
   for (size_t i = 0; i < 25; i++)
-	  console_printf("");
+	  console_printf("\n\r");
 
   console_printf("=========================================\n\r");
   console_printf("      Audio Processor Firmware v0.1      \n\r");
@@ -317,16 +314,10 @@ HSEM notification */
   console_register_command("lschain\0", lschain);
   console_register_command("setparam\0", setparam);
 
-  //drvman_register_driver(&mcu_internal_driver);
-  drvman_set_usb_driver(&usb_driver);
+  drvman_set_host_driver(&usb_driver);
+  drvman_set_audio_driver(&cs4272_driver);
 
-  drvman_register_driver(&cs4272_driver);
-  drvman_set_audio_driver(1);
-
-  //drvman_register_driver(&usb_driver);
-
-
-  //audio_engine_init();
+  audio_engine_init();
 
   console_exec("");
   //console_exec_script(script_eq);

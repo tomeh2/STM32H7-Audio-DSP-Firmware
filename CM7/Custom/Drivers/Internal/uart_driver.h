@@ -8,8 +8,8 @@
 #ifndef DRIVERS_INTERNAL_UART_DRIVER_H_
 #define DRIVERS_INTERNAL_UART_DRIVER_H_
 
-extern struct InterfaceOperations uart_drv_ops;
+#include "terminal_driver.h"
 
-//void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart);
+extern struct TerminalDriverOps uart_drv_ops;
 
 #endif /* DRIVERS_INTERNAL_UART_DRIVER_H_ */

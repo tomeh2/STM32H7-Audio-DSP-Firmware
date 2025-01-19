@@ -25,7 +25,7 @@ void intper_dma_cmpl_callback()
 	inactive_tx_buf = &tx_buf[BUFFER_SIZE / 2];
 }
 
-int32_t intper_start(struct Interface* intf)
+int32_t intper_start(struct AudioDriver* intf)
 {
 	if (is_running)
 		return -EINVAL;
@@ -52,7 +52,7 @@ int32_t intper_start(struct Interface* intf)
 	is_running = 1;
 }
 
-int8_t intper_stop(struct Interface* intf)
+int8_t intper_stop(struct AudioDriver* intf)
 {
 	if (!intf->private_data)
 		return -EINVAL;
@@ -67,12 +67,12 @@ int8_t intper_stop(struct Interface* intf)
 	is_running = 0;
 }
 
-int32_t intper_read(struct Interface* intf, void* buf, size_t len)
+int32_t intper_read(struct AudioDriver* intf, void* buf, size_t len)
 {
 	return 0;
 }
 
-int32_t intper_write(struct Interface* intf, void* buf, size_t len)
+int32_t intper_write(struct AudioDriver* intf, void* buf, size_t len)
 {
 	if (!is_running)
 		return -EINVAL;
@@ -90,14 +90,14 @@ int32_t intper_write(struct Interface* intf, void* buf, size_t len)
 	return 0;
 }
 
-int32_t intper_ioctl(struct Interface* intf, uint32_t ctl_id)
+int32_t intper_ioctl(struct AudioDriver* intf, uint32_t ctl_id)
 {
 	if (!is_running)
 		return -EINVAL;
 	return 0;
 }
 
-struct InterfaceOperations int_per_drv_ops = {
+struct AudioDriverOps int_per_drv_ops = {
 	.start = intper_start,
 	.stop = intper_stop,
 	.read = intper_read,

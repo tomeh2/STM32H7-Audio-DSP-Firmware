@@ -8,10 +8,12 @@
 #ifndef CONSOLE_INC_CONSOLE_H_
 #define CONSOLE_INC_CONSOLE_H_
 
-#include "interface.h"
+#include <stdarg.h>
+#include <stdint.h>
 
 void console_init();
 void console_printf(const char* fmt, ...);
+void console_vsprintf(const char* fmt, va_list args);
 void console_exec_script(char* str);
 void console_exec(char* str);
 void console_register_command(char* name, void (*func)());

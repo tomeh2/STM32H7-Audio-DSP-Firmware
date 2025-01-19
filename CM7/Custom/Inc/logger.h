@@ -24,6 +24,12 @@
 	#define LOG_TIME_STOP(timer_id) ;
 #endif
 
+#define DEBUG_LEVELS 4
+#define DEBUG_LEVEL_INFO 0
+#define DEBUG_LEVEL_WARNING 1
+#define DEBUG_LEVEL_ERROR 2
+#define DEBUG_LEVEL_CRITICAL 3
+
 struct LogTimer
 {
 	char* name;
@@ -50,5 +56,6 @@ int8_t logger_log_timer_stop(uint8_t timer_id);
 int8_t logger_log_timer_avg(uint8_t timer_id, uint32_t* avg_time);
 int8_t logger_event_set_name(uint8_t event_id, char* name);
 int8_t logger_event_increment(uint8_t event_id);
+void logger_printf(uint8_t level, char* fmt, ...);
 
 #endif /* INC_LOGGER_H_ */

@@ -7,7 +7,6 @@
 
 #include "stm32h7xx_hal.h"
 #include "uart_driver.h"
-#include "interface.h"
 #include "audio_defs.h"
 
 #include <stdlib.h>
@@ -27,7 +26,7 @@ static uint8_t recv;
 
 static uint8_t uart_lock;
 
-int8_t uart_start(struct Interface* intf)
+int8_t uart_start(struct TerminalDriver* intf)
 {
 	if (is_init)
 		return -EINVAL;
@@ -49,12 +48,12 @@ int8_t uart_start(struct Interface* intf)
 	return 0;
 }
 
-int8_t uart_stop(struct Interface* intf)
+int8_t uart_stop(struct TerminalDriver* intf)
 {
 	return 0;
 }
 
-int8_t uart_read(struct Interface* intf, void* buf, size_t len)
+int8_t uart_read(struct TerminalDriver* intf, void* buf, size_t len)
 {
 	size_t to_copy = rx_used < len ? rx_used : len;
 	uint8_t* char_buf = (uint8_t*) buf;
@@ -69,13 +68,13 @@ int8_t uart_read(struct Interface* intf, void* buf, size_t len)
 	return to_copy;
 }
 
-int8_t uart_write(struct Interface* intf, void* buf, size_t len)
+int8_t uart_write(struct TerminalDriver* intf, void* buf, size_t len)
 {
 	HAL_UART_Transmit(intf->private_data, buf, len, 1000000);
 	return len;
 }
 
-int8_t uart_ioctl(struct Interface* intf, uint32_t ctlId)
+int8_t uart_ioctl(struct TerminalDriver* intf, uint32_t ctlId)
 {
 
 }
@@ -98,7 +97,7 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 	HAL_UART_Receive_IT(huart, &recv, 1);
 }
 
-struct InterfaceOperations uart_drv_ops = {
+struct TerminalDriverOps uart_drv_ops = {
 	.start = uart_start,
 	.stop = uart_stop,
 	.read = uart_read,

@@ -9,8 +9,10 @@
 #include "block_list.h"
 #include "audio_defs.h"
 #include "arm_math.h"
-#include "console.h"
+#include "logger.h"
 #include "linked_list.h"
+
+char* module_name = "[Audio Stream]";
 
 #define NUM_CHANNELS 2
 
@@ -45,7 +47,7 @@ void audio_stream_insblk(struct AudioStream* stream, struct Block* block)
 {
 	if (!block)
 	{
-		console_printf("[Audio Stream] Tried to insert a NULL block");
+		logger_printf(DEBUG_LEVEL_ERROR, "%s Tried to insert a NULL block", module_name);
 		return;
 	}
 

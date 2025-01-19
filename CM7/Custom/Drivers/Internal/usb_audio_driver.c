@@ -40,7 +40,7 @@ int8_t usb_start(struct HostInterface* intf)
 	return EOK;
 }
 
-int8_t usb_stop(struct HostInterface* intf)
+int8_t usb_stop(struct HostDriver* intf)
 {
 	__disable_irq();
 	if (!is_init)
@@ -54,7 +54,7 @@ int8_t usb_stop(struct HostInterface* intf)
 }
 
 
-int8_t usb_dev_read(struct HostInterface* intf, float* buf, size_t len)
+int8_t usb_dev_read(struct HostDriver* intf, float* buf, size_t len)
 {
 	__disable_irq();
 
@@ -70,7 +70,7 @@ int8_t usb_dev_read(struct HostInterface* intf, float* buf, size_t len)
 	return EOK;
 }
 
-int8_t usb_dev_write(struct HostInterface* intf, float* buf, size_t len)
+int8_t usb_dev_write(struct HostDriver* intf, float* buf, size_t len)
 {
 	__disable_irq();
 
@@ -86,7 +86,7 @@ int8_t usb_dev_write(struct HostInterface* intf, float* buf, size_t len)
 	return EOK;
 }
 
-int8_t usb_host_read(struct HostInterface* intf, char* buf, size_t len)
+int8_t usb_host_read(struct HostDriver* intf, char* buf, size_t len)
 {
 	__disable_irq();
 
@@ -102,7 +102,7 @@ int8_t usb_host_read(struct HostInterface* intf, char* buf, size_t len)
 	return EOK;
 }
 
-int8_t usb_host_write(struct HostInterface* intf, char* buf, size_t len)
+int8_t usb_host_write(struct HostDriver* intf, char* buf, size_t len)
 {
 	__disable_irq();
 	if (!is_init)
@@ -117,7 +117,7 @@ int8_t usb_host_write(struct HostInterface* intf, char* buf, size_t len)
 	return EOK;
 }
 
-int8_t usb_ioctl(struct HostInterface* intf, uint32_t ctl_id)
+int8_t usb_ioctl(struct HostDriver* intf, uint32_t ctl_id)
 {
 	__disable_irq();
 	if (!is_init)
@@ -130,7 +130,7 @@ int8_t usb_ioctl(struct HostInterface* intf, uint32_t ctl_id)
 	return EOK;
 }
 
-struct HostInterfaceOps usb_audio_class_driver = {
+struct HostDriverOps usb_audio_class_driver = {
 	.start = usb_start,
 	.stop = usb_stop,
 	.host_data_read = usb_host_read,
